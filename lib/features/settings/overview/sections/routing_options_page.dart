@@ -90,94 +90,11 @@ class RoutingOptionsPage extends HookConsumerWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                if (rules.isNotEmpty)
-                  Positioned.fill(
-                    child: ReorderableListView.builder(
-                      padding: const EdgeInsets.only(bottom: 56 + 16 + 16),
-                      buildDefaultDragHandles: false,
-                      onReorder: ref.read(rulesNotifierProvider.notifier).reorder,
-                      itemBuilder: (context, index) => RuleTile(key: Key('$index'), index: index, rule: rules[index]),
-                      itemCount: rules.length,
-                    ),
-                  )
-                else
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Text(
-                        t.pages.settings.routing.routeRule.empty,
-                        style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurface),
-                      ),
-                    ),
-                  ),
-                _ExpandableFab(
-                  tooltip: t.pages.settings.routing.routeRule.add,
-                  closeTooltip: t.common.close,
-                  children: [
-                    _FabMenuItem(
-                      icon: Icons.rule_rounded,
-                      label: t.pages.settings.routing.routeRule.create,
-                      onTap: () => context.goNamed('rule', pathParameters: {'orderId': 'new'}),
-                    ),
-                    _FabMenuItem(
-                      icon: Icons.view_list_rounded,
-                      label: t.pages.settings.routing.predefinedRules.title,
-                      onTap: ref.read(bottomSheetsNotifierProvider.notifier).showPredefinedRules,
-                    ),
-                  ],
-                ),
-                Positioned(
-                  right: 0,
-                  left: 0,
-                  bottom: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Material(
-                        color: theme.colorScheme.primaryContainer,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                        child: InkWell(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
-                          onTap: () =>
-                              ref.read(Preferences.showRouteGeneralOptions.notifier).update(!showGeneralOptions),
-                          child: Container(
-                            height: 32,
-                            padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(t.pages.settings.routing.generalOptions.title),
-                                const Gap(4),
-                                Icon(
-                                  showGeneralOptions ? Icons.arrow_drop_down_rounded : Icons.arrow_drop_up_rounded,
-                                  size: 16,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
           SizeTransition(
             sizeFactor: CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
-            axisAlignment: -1,
+            axisAlignment: 1,
             child: Column(
               children: [
-                Divider(height: 4, thickness: 4, color: theme.colorScheme.primaryContainer),
                 ChoicePreferenceWidget(
                   selected: ref.watch(ConfigOptions.region),
                   preferences: ref.watch(ConfigOptions.region.notifier),
@@ -247,6 +164,89 @@ class RoutingOptionsPage extends HookConsumerWidget {
                   title: t.pages.settings.routing.generalOptions.ipv6Route,
                   icon: Icons.looks_6_rounded,
                   presentChoice: (value) => value.present(t),
+                ),
+                Divider(height: 4, thickness: 4, color: theme.colorScheme.primaryContainer),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                if (rules.isNotEmpty)
+                  Positioned.fill(
+                    child: ReorderableListView.builder(
+                      padding: const EdgeInsets.only(top: 32, bottom: 56 + 16 + 16),
+                      buildDefaultDragHandles: false,
+                      onReorder: ref.read(rulesNotifierProvider.notifier).reorder,
+                      itemBuilder: (context, index) => RuleTile(key: Key('$index'), index: index, rule: rules[index]),
+                      itemCount: rules.length,
+                    ),
+                  )
+                else
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        t.pages.settings.routing.routeRule.empty,
+                        style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurface),
+                      ),
+                    ),
+                  ),
+                _ExpandableFab(
+                  tooltip: t.pages.settings.routing.routeRule.add,
+                  closeTooltip: t.common.close,
+                  children: [
+                    _FabMenuItem(
+                      icon: Icons.rule_rounded,
+                      label: t.pages.settings.routing.routeRule.create,
+                      onTap: () => context.goNamed('rule', pathParameters: {'orderId': 'new'}),
+                    ),
+                    _FabMenuItem(
+                      icon: Icons.view_list_rounded,
+                      label: t.pages.settings.routing.predefinedRules.title,
+                      onTap: ref.read(bottomSheetsNotifierProvider.notifier).showPredefinedRules,
+                    ),
+                  ],
+                ),
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  top: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Material(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16),
+                        ),
+                        child: InkWell(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                          ),
+                          onTap: () =>
+                              ref.read(Preferences.showRouteGeneralOptions.notifier).update(!showGeneralOptions),
+                          child: Container(
+                            height: 32,
+                            padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(t.pages.settings.routing.generalOptions.title),
+                                const Gap(4),
+                                Icon(
+                                  showGeneralOptions ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
