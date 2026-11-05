@@ -281,9 +281,9 @@ class KeepTopAction extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsProvider).requireValue;
-    final profile = ref.watch(activeProfileProvider).valueOrNull;
+    final profile = ref.watch(activeProfileProvider).value;
     if (profile == null) return const SizedBox.shrink();
-    final total = ref.watch(profileProxyCountProvider(profile.id)).valueOrNull ?? 0;
+    final total = ref.watch(profileProxyCountProvider(profile.id)).value ?? 0;
     final keepTop = profile.keepTop;
     final keeping = profile.keepTags.isNotEmpty || keepTop == keepTopAnswering || (keepTop > 0 && total > keepTop);
     if (!keeping && !profile.offersKeepTop(total)) return const SizedBox.shrink();
@@ -372,9 +372,9 @@ class KeepTopFooter extends HookConsumerWidget {
       final timer = Timer(_retestWait, () => retest.value = const {});
       return timer.cancel;
     }, [retest.value]);
-    final profile = ref.watch(activeProfileProvider).valueOrNull;
+    final profile = ref.watch(activeProfileProvider).value;
     if (profile == null) return const SizedBox.shrink();
-    final total = ref.watch(profileProxyCountProvider(profile.id)).valueOrNull ?? 0;
+    final total = ref.watch(profileProxyCountProvider(profile.id)).value ?? 0;
     final keepTop = profile.keepTop;
     // the proxies the user chose run, and only them; the core runs them all when none is left
     final chosen = profile.keepTags.isNotEmpty && listed < total;

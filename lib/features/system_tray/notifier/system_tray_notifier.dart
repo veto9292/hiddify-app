@@ -46,10 +46,10 @@ class SystemTrayNotifier extends _$SystemTrayNotifier with TrayListener, AppLogg
     // Watch AsyncValues directly (not .future): after disconnect the proxy
     // provider used to error while still holding a previous delay, and awaiting
     // .future could leave the tray on the old green/error mark.
-    final connection = ref.watch(connectionNotifierProvider).valueOrNull ?? const ConnectionStatus.disconnected();
+    final connection = ref.watch(connectionNotifierProvider).value ?? const ConnectionStatus.disconnected();
     // the ping alone, which the tooltip shows: the rest of the active proxy is not the tray's
     final urlTestDelay = connection is Connected
-        ? ref.watch(activeProxyNotifierProvider.select((proxy) => proxy.valueOrNull?.urlTestDelay ?? 0))
+        ? ref.watch(activeProxyNotifierProvider.select((proxy) => proxy.value?.urlTestDelay ?? 0))
         : 0;
     // Dock/taskbar/tray mark: none when disconnected, error while the core waits for a ping,
     // green once the core reports connected.

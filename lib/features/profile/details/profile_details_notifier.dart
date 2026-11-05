@@ -86,7 +86,7 @@ class ProfileDetailsNotifier extends _$ProfileDetailsNotifier with AppLogger {
 
   void setContent(String configContent) {
     if (state case AsyncData(value: final ProfileDetailsState data)) {
-      final isJson = data.config.valueOrNull?.isJson ?? false;
+      final isJson = data.config.value?.isJson ?? false;
       state = AsyncData(
         data.copyWith(config: AsyncData((text: configContent, isJson: isJson)), isDetailsChanged: true),
       );
@@ -102,7 +102,7 @@ class ProfileDetailsNotifier extends _$ProfileDetailsNotifier with AppLogger {
           await doAsync<bool>(() async {
             final t = await ref.read(translationsProvider.future);
             // a rename saved before the config loaded waits for it, so the config is never lost
-            final config = value.config.valueOrNull ?? await _config;
+            final config = value.config.value ?? await _config;
             return (await _profilesRepo.offlineUpdate(value.profile, config.text).run()).match(
               (l) async {
                 await ref

@@ -127,12 +127,12 @@ class ProxyInfoDialog extends ConsumerWidget with PresLogger {
     final proxy =
         ref.watch(
           proxiesOverviewNotifierProvider.select(
-            (list) => list.valueOrNull?.items.where((e) => e.tag == outboundInfo.tag).firstOrNull,
+            (list) => list.value?.items.where((e) => e.tag == outboundInfo.tag).firstOrNull,
           ),
         ) ??
         ref.watch(
           mainOutboundsNotifierProvider.select((list) {
-            final main = list.valueOrNull;
+            final main = list.value;
             if (main == null) return null;
             if (main.hasChainHop() && main.chainHop.tag == outboundInfo.tag) return main.chainHop;
             return main.items.expand((group) => group.items).where((e) => e.tag == outboundInfo.tag).firstOrNull;

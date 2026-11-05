@@ -78,7 +78,7 @@ gen translate:
 	@echo "$@ skipped: the generated code is already there (SKIP_CODEGEN=1)"
 else
 gen:
-	dart run build_runner build --delete-conflicting-outputs
+	dart run build_runner build
 
 translate:
 	dart run slang
@@ -94,7 +94,7 @@ prepare:
 	@echo    make macos-prepare
 	@echo    make ios-prepare
 
-common-prepare:  get gen translate
+common-prepare:  get translate gen
 windows-prepare: common-prepare windows-libs
 	
 ios-prepare: common-prepare ios-libs 

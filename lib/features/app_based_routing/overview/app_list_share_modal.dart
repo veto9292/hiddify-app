@@ -97,7 +97,7 @@ class AppListShareModal extends ConsumerWidget {
                     width: double.infinity,
                     child: FilledButton.icon(
                       onPressed: () async {
-                        final appList = ref.read(AppListProvider(mode).notifier);
+                        final appList = ref.read(appListProvider(mode).notifier);
                         Navigator.of(context).pop();
                         await appList.shareOnGithub(added: added, removed: removed);
                       },

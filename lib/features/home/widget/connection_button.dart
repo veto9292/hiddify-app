@@ -40,14 +40,14 @@ enum _Look { loading, disconnected, connecting, waiting, noProxies, connected, h
 /// A hot reload keeps the tunnel up and has a look of its own.
 _Look _lookOf(AsyncValue<ConnectionStatus> status) => switch (status) {
   AsyncError() => _Look.failed,
-  AsyncValue(valueOrNull: Disconnected(connectionFailure: _?)) => _Look.failed,
-  AsyncValue(valueOrNull: Disconnected()) => _Look.disconnected,
-  AsyncValue(valueOrNull: Connecting()) => _Look.connecting,
-  AsyncValue(valueOrNull: Waiting()) => _Look.waiting,
-  AsyncValue(valueOrNull: NoAvailableProxies()) => _Look.noProxies,
-  AsyncValue(valueOrNull: HotReloading()) => _Look.hotReloading,
-  AsyncValue(valueOrNull: Connected()) => _Look.connected,
-  AsyncValue(valueOrNull: Disconnecting()) => _Look.disconnecting,
+  AsyncValue(value: Disconnected(connectionFailure: _?)) => _Look.failed,
+  AsyncValue(value: Disconnected()) => _Look.disconnected,
+  AsyncValue(value: Connecting()) => _Look.connecting,
+  AsyncValue(value: Waiting()) => _Look.waiting,
+  AsyncValue(value: NoAvailableProxies()) => _Look.noProxies,
+  AsyncValue(value: HotReloading()) => _Look.hotReloading,
+  AsyncValue(value: Connected()) => _Look.connected,
+  AsyncValue(value: Disconnecting()) => _Look.disconnecting,
   _ => _Look.loading,
 };
 
@@ -72,14 +72,14 @@ class ConnectionButton extends HookConsumerWidget {
 
     final failure = switch (status) {
       AsyncError(:final ConnectionFailure error) => error,
-      AsyncValue(valueOrNull: Disconnected(connectionFailure: final failure?)) => failure,
+      AsyncValue(value: Disconnected(connectionFailure: final failure?)) => failure,
       _ => null,
     };
     // the speeds the button's light follows while connected, and only them: the core's status
     // comes every second and something in it always changed
     final (download, upload) = ref.watch(
       statsNotifierProvider.select((stats) {
-        final s = stats.valueOrNull;
+        final s = stats.value;
         return s == null ? (0, 0) : (s.downlink.toInt(), s.uplink.toInt());
       }),
     );
@@ -191,7 +191,7 @@ class ConnectionButton extends HookConsumerWidget {
   /// Connected, but the traffic does not get through: amber, between connected and failed.
   static const _degradedColor = Color(0xFFE3A63A);
 
-  static String _hopLabel(TranslationsConnectionHealthEn h, ConnectionHealth health) => switch (health.hopState) {
+  static String _hopLabel(Translations$connection$health$en h, ConnectionHealth health) => switch (health.hopState) {
     HealthState.ok => h.hopReady,
     HealthState.pending => h.hopConnecting,
     HealthState.blocked => h.hopBlocked,
@@ -201,7 +201,7 @@ class ConnectionButton extends HookConsumerWidget {
   /// Connects, or sends the user to add a profile when there is none.
   Future<void> _connect(WidgetRef ref) async {
     final dialogs = ref.read(dialogNotifierProvider.notifier);
-    if (ref.read(activeProfileProvider).valueOrNull == null) {
+    if (ref.read(activeProfileProvider).value == null) {
       await dialogs.showNoActiveProfile();
       ref.read(bottomSheetsNotifierProvider.notifier).showAddProfile();
       return;

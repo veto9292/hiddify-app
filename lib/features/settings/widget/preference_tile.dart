@@ -5,6 +5,7 @@ import 'package:hiddify/core/utils/preferences_utils.dart';
 import 'package:hiddify/features/proxy/active/ip_widget.dart';
 import 'package:hiddify/features/settings/notifier/battery_optimization/battery_optimizations_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 class ValuePreferenceWidget<T> extends HookConsumerWidget {
   const ValuePreferenceWidget({

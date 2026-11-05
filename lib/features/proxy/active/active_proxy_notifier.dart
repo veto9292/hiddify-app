@@ -65,7 +65,7 @@ class IpInfoNotifier extends _$IpInfoNotifier with AppLogger {
     }
 
     _forceCheck = false;
-    final customIpInfoUrl = _ipinfoUrlFromHeaders(ref.watch(activeProfileProvider).valueOrNull?.populatedHeaders);
+    final customIpInfoUrl = _ipinfoUrlFromHeaders(ref.watch(activeProfileProvider).value?.populatedHeaders);
     final info = await ref
         .watch(proxyRepositoryProvider)
         .getCurrentIpInfo(cancelToken, customIpInfoUrl: customIpInfoUrl)
@@ -255,7 +255,7 @@ class ActiveProxyCard extends _$ActiveProxyCard {
 
   @override
   ActiveProxyCardData? build() {
-    final list = ref.watch(mainOutboundsNotifierProvider).valueOrNull;
+    final list = ref.watch(mainOutboundsNotifierProvider).value;
     if (list == null) return null;
     final chain = ref.watch(ConfigOptions.chainStatus);
     final card = ActiveProxyCardData.from(
@@ -288,9 +288,9 @@ class ActiveProxyCard extends _$ActiveProxyCard {
 /// its list yet.
 @Riverpod(keepAlive: true)
 ConnectionHealth? connectionHealth(Ref ref) {
-  final status = ref.watch(connectionNotifierProvider).valueOrNull;
+  final status = ref.watch(connectionNotifierProvider).value;
   if (status == null || !status.isRunning) return null;
-  final list = ref.watch(mainOutboundsNotifierProvider).valueOrNull;
+  final list = ref.watch(mainOutboundsNotifierProvider).value;
   if (list == null) return null;
   return ConnectionHealth.from(status, list, ref.watch(ConfigOptions.chainStatus));
 }

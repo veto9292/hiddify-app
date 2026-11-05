@@ -344,7 +344,7 @@ class ProxiesOverviewNotifier extends _$ProxiesOverviewNotifier with AppLogger {
   /// Tests the speed of the proxies in the list as the speed test is set: all of them, or the
   /// fastest by their ping up to its limit, one after the other.
   Future<void> speedTestAll() async {
-    final group = state.valueOrNull;
+    final group = state.value;
     if (group == null) return;
     // the ones keep top left at rest are not tested: a test would load each of them
     final proxies = group.items.where((e) => !e.isGroup && !e.resting).toList();

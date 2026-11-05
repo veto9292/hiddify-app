@@ -37,6 +37,8 @@ class AboutPage extends HookConsumerWidget {
           return ref.read(inAppNotificationControllerProvider).showErrorToast(t.presentShortError(error));
         case AppUpdateStateNotAvailable():
           return ref.read(inAppNotificationControllerProvider).showSuccessToast(t.pages.about.notAvailableMsg);
+        default:
+          break;
       }
     });
 

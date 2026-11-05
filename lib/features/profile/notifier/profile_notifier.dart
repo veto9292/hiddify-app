@@ -76,6 +76,8 @@ class AddProfileNotifier extends _$AddProfileNotifier with AppLogger {
           } else {
             showProfileFailure(ref, t, error, action: t.pages.profiles.msg.add.failure);
           }
+        default:
+          break;
       }
     });
     ref.onDispose(() {

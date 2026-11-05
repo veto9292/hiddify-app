@@ -48,7 +48,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
     final localizations = MaterialLocalizations.of(context);
 
     final mode = ref.watch(Preferences.perAppProxyModeInUse);
-    final selectedApps = ref.watch(AppListProvider(mode));
+    final selectedApps = ref.watch(appListProvider(mode));
 
     final hideSystemApps = useState(false);
     final isSearching = useState(false);
@@ -93,7 +93,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
     );
 
     if (mode != null) {
-      ref.listen(AppListProvider(mode), (previous, next) {
+      ref.listen(appListProvider(mode), (previous, next) {
         if (previous != null) {
           if ((previous, next) case (AsyncData(value: final prevData), AsyncData(value: final nextData))) {
             if (nextData.isNotEmpty) {
@@ -123,7 +123,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
     final appBasedRouting = t.pages.settings.routing.appBasedRouting;
     // the auto picks you removed: the chip brings them back, and the toast can take that back
     final removed = [
-      for (final entry in (selectedApps.valueOrNull ?? const <String, int>{}).entries)
+      for (final entry in (selectedApps.value ?? const <String, int>{}).entries)
         if (PkgFlag.autoSelection.check(entry.value) && PkgFlag.forceDeselection.check(entry.value)) entry.key,
     ];
     Future<void> restoreRemoved() async {
@@ -182,7 +182,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
 
     // the apps you added that auto selection didn't pick; with the removed auto picks, this is what Share sends
     final added = [
-      for (final entry in (selectedApps.valueOrNull ?? const <String, int>{}).entries)
+      for (final entry in (selectedApps.value ?? const <String, int>{}).entries)
         if (PkgFlag.userSelection.check(entry.value) && !PkgFlag.autoSelection.check(entry.value)) entry.key,
     ];
     final autoOn = ref.watch(Preferences.autoAppsSelectionRegion) != null;
@@ -257,7 +257,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
                                 message: t.dialogs.confirmation.appList.import.msg,
                               )
                               .then((shouldImport) async {
-                                if (shouldImport) await ref.read(AppListProvider(mode).notifier).importClipboard();
+                                if (shouldImport) await ref.read(appListProvider(mode).notifier).importClipboard();
                               }),
                         ),
                         MenuItemButton(
@@ -269,7 +269,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
                                 message: t.pages.settings.routing.appBasedRouting.options.import.msg,
                               )
                               .then((shouldImport) async {
-                                if (shouldImport) await ref.read(AppListProvider(mode).notifier).importFile();
+                                if (shouldImport) await ref.read(appListProvider(mode).notifier).importFile();
                               }),
                         ),
                       ],
@@ -279,11 +279,11 @@ class AppListPage extends HookConsumerWidget with PresLogger {
                       menuChildren: <Widget>[
                         MenuItemButton(
                           child: Text(t.pages.settings.routing.appBasedRouting.options.export.clipboard),
-                          onPressed: () async => await ref.read(AppListProvider(mode).notifier).exportClipboard(),
+                          onPressed: () async => await ref.read(appListProvider(mode).notifier).exportClipboard(),
                         ),
                         MenuItemButton(
                           child: Text(t.pages.settings.routing.appBasedRouting.options.export.file),
-                          onPressed: () async => await ref.read(AppListProvider(mode).notifier).exportFile(),
+                          onPressed: () async => await ref.read(appListProvider(mode).notifier).exportFile(),
                         ),
                       ],
                       child: Text(t.common.export),
@@ -291,7 +291,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
                     const PopupMenuDivider(),
                     MenuItemButton(
                       child: Text(t.pages.settings.routing.appBasedRouting.options.clearAllSelections),
-                      onPressed: () => ref.read(AppListProvider(mode).notifier).clearAll(),
+                      onPressed: () => ref.read(appListProvider(mode).notifier).clearAll(),
                     ),
                   ],
                   builder: (context, controller, child) => IconButton(
@@ -343,7 +343,7 @@ class AppListPage extends HookConsumerWidget with PresLogger {
               ),
               value: flag == null ? false : PkgFlag.checkboxValue(flag),
               tristate: true,
-              onChanged: (_) => ref.read(AppListProvider(mode).notifier).updatePkg(package.packageName),
+              onChanged: (_) => ref.read(appListProvider(mode).notifier).updatePkg(package.packageName),
               secondary: package.icon == null
                   ? null
                   : Image.memory(package.icon!, width: 48, height: 48, cacheWidth: 48, cacheHeight: 48),

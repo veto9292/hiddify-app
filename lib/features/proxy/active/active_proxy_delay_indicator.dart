@@ -25,17 +25,17 @@ class ActiveProxyDelayIndicator extends HookConsumerWidget with InfraLogger {
     final t = ref.watch(translationsProvider).requireValue;
     // a ping the core found, or the timeout it found on the proxy the user selected
     final connected = ref.watch(
-      connectionNotifierProvider.select((s) => s.valueOrNull is Connected || s.valueOrNull is NoAvailableProxies),
+      connectionNotifierProvider.select((s) => s.value is Connected || s.value is NoAvailableProxies),
     );
-    // Stale OutboundInfo can linger in valueOrNull after disconnect; never show then.
+    // Stale OutboundInfo can linger in value after disconnect; never show then.
     if (!connected) return const SizedBox.shrink();
 
     final activeProxy = ref.watch(activeProxyNotifierProvider);
     final theme = Theme.of(context);
 
-    // Prefer valueOrNull so AsyncLoading-with-previous (coreRestart after resume)
+    // Prefer value so AsyncLoading-with-previous (coreRestart after resume)
     // keeps the last delay instead of returning an empty box via `is! AsyncData`.
-    final proxy = activeProxy.valueOrNull;
+    final proxy = activeProxy.value;
     if (proxy == null) {
       // Only reserve space while rebinding; stay collapsed when truly disconnected.
       if (!activeProxy.isLoading) return const SizedBox.shrink();

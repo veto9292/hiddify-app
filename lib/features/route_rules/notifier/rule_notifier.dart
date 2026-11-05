@@ -111,7 +111,7 @@ class RuleNotifier extends _$RuleNotifier {
 @riverpod
 bool isRuleEdited(Ref ref, int? listOrder) {
   if (listOrder == null) return true;
-  return ref.watch(RuleNotifierProvider(listOrder)) !=
+  return ref.watch(ruleNotifierProvider(listOrder)) !=
       ref.watch(rulesNotifierProvider.select((value) => value.where((rule) => rule.listOrder == listOrder))).first;
 }
 
