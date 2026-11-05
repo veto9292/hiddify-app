@@ -1,7 +1,7 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hiddify/core/localization/locale_extensions.dart';
 import 'package:hiddify/core/localization/translations.dart';
+import 'package:world_flags/world_flags.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -14,12 +14,11 @@ void main() {
     expect(codes.toSet(), hasLength(codes.length));
   });
 
-  test("every language's flag is bundled", () async {
+  test("every language's flag is drawn", () {
     for (final locale in AppLocale.values) {
-      // IPCountryFlag draws Iran with the lion and sun
-      final code = locale.flagCountryCode == 'ir' ? 'ir-shir' : locale.flagCountryCode;
-      final svg = await rootBundle.loadString('packages/circle_flags/assets/svg/$code.svg');
-      expect(svg, contains('<svg'), reason: '${locale.name}: $code.svg');
+      // IPCountryFlag draws Iran with the lion and sun from the app's assets
+      if (locale.flagCountryCode == 'ir') continue;
+      expect(WorldCountry.maybeFromCodeShort(locale.flagCountryCode), isNotNull, reason: locale.name);
     }
   });
 }

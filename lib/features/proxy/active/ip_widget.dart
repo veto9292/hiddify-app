@@ -1,13 +1,14 @@
-import 'package:circle_flags/circle_flags.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hiddify/core/haptic/haptic_service.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/utils/ip_utils.dart';
+import 'package:hiddify/gen/assets.gen.dart';
 import 'package:hiddify/gen/fonts.gen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import "package:simple_icons/simple_icons.dart";
+import 'package:world_flags/world_flags.dart';
 
 class IPText extends HookConsumerWidget {
   const IPText({required this.ip, required this.onLongPress, this.constrained = false, super.key});
@@ -126,11 +127,7 @@ class IPCountryFlag extends HookConsumerWidget {
                     // shared by every tile, so the clip was what each one paid for
                     ClipRRect(
                       borderRadius: BorderRadius.circular(radius),
-                      child: CircleFlag(
-                        countryCode!.toLowerCase() == "ir" ? "ir-shir" : countryCode!,
-                        size: size - 8,
-                        shape: null,
-                      ),
+                      child: countryFlag(countryCode!, size: size - 8, shape: null),
                     ),
                     if (organization != null)
                       Positioned.directional(
@@ -145,6 +142,26 @@ class IPCountryFlag extends HookConsumerWidget {
       ),
     );
   }
+}
+
+/// The flag of [countryCode] as a [size] square, clipped to [shape] (square when null). Iran shows
+/// the lion and sun, which world_flags doesn't have; every other country comes from world_flags,
+/// drawn square with its proportions kept; an unknown code shows an empty square.
+Widget countryFlag(String countryCode, {double size = 48, ShapeBorder? shape = const CircleBorder()}) {
+  final country = WorldCountry.maybeFromCodeShort(countryCode);
+  final Widget flag = countryCode.toLowerCase() == "ir"
+      ? Assets.images.irShir.svg(width: size, height: size, fit: BoxFit.cover)
+      : country == null
+      ? SizedBox.square(dimension: size)
+      : CountryFlag.simplified(country, height: size, width: size, aspectRatio: 1);
+  if (shape == null) return flag;
+  // the text direction resolves directional shapes, such as the routing page's BorderRadiusDirectional
+  return Builder(
+    builder: (context) => ClipPath(
+      clipper: ShapeBorderClipper(shape: shape, textDirection: Directionality.maybeOf(context)),
+      child: flag,
+    ),
+  );
 }
 
 class OrgIconData {
