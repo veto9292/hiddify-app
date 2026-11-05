@@ -15,7 +15,7 @@ on:
 env:
   IS_GITHUB_ACTIONS: 1
   CHANNEL: "${{ inputs.channel }}"
-  FLUTTER_VERSION: '3.38.5'
+  FLUTTER_VERSION: '3.47.9'
   NDK_VERSION: r28c
   UPLOAD_ARTIFACT: "${{ inputs.upload-artifact }}"
   TAG_NAME: "${{ inputs.tag-name }}"

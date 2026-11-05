@@ -9,7 +9,7 @@ environment:
   # This SDK version is strictly required and must not be removed.
   # It is parsed/grep-ed by Makefile and Dockerfile to configure the build environment.
   # Ensure this matches the target Flutter version.
-  flutter: ^3.38.5
+  flutter: ^3.47.9
   
 dependencies:
   flutter:
