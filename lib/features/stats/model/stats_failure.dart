@@ -4,7 +4,8 @@ import 'package:hiddify/core/model/failures.dart';
 
 part 'stats_failure.freezed.dart';
 
-@freezed
+// one case, so freezed 4 would build copyWith on the abstract base class
+@Freezed(copyWith: false)
 sealed class StatsFailure with _$StatsFailure, Failure {
   const StatsFailure._();
 
