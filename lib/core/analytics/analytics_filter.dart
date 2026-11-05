@@ -7,9 +7,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 FutureOr<SentryEvent?> sentryBeforeSend(SentryEvent event, Hint hint) {
   if (!canSendEvent(event.throwable)) return null;
-  return event.copyWith(
-    user: SentryUser(email: "", username: "", ipAddress: "0.0.0.0"),
-  );
+  return event..user = SentryUser(email: "", username: "", ipAddress: "0.0.0.0");
 }
 
 bool canSendEvent(dynamic throwable) {
