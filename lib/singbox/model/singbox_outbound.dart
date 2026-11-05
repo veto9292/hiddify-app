@@ -5,7 +5,7 @@ part 'singbox_outbound.freezed.dart';
 part 'singbox_outbound.g.dart';
 
 @freezed
-class SingboxOutboundGroup with _$SingboxOutboundGroup {
+abstract class SingboxOutboundGroup with _$SingboxOutboundGroup {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxOutboundGroup({
     required String tag,
@@ -18,7 +18,7 @@ class SingboxOutboundGroup with _$SingboxOutboundGroup {
 }
 
 @freezed
-class SingboxOutboundGroupItem with _$SingboxOutboundGroupItem {
+abstract class SingboxOutboundGroupItem with _$SingboxOutboundGroupItem {
   const SingboxOutboundGroupItem._();
 
   @JsonSerializable(fieldRename: FieldRename.kebab)
