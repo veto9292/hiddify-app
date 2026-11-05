@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hiddify/core/haptic/haptic_service.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/utils/ip_utils.dart';
+import 'package:hiddify/gen/assets.gen.dart';
 import 'package:hiddify/gen/fonts.gen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import "package:simple_icons/simple_icons.dart";
@@ -126,11 +127,7 @@ class IPCountryFlag extends HookConsumerWidget {
                     // shared by every tile, so the clip was what each one paid for
                     ClipRRect(
                       borderRadius: BorderRadius.circular(radius),
-                      child: CircleFlag(
-                        countryCode!.toLowerCase() == "ir" ? "ir-shir" : countryCode!,
-                        size: size - 8,
-                        shape: null,
-                      ),
+                      child: countryFlag(countryCode!, size: size - 8, shape: null),
                     ),
                     if (organization != null)
                       Positioned.directional(
@@ -145,6 +142,15 @@ class IPCountryFlag extends HookConsumerWidget {
       ),
     );
   }
+}
+
+/// The flag of [countryCode], clipped to [shape] (square when null). Iran shows the lion and
+/// sun, which circle_flags doesn't have; every other country comes from circle_flags.
+Widget countryFlag(String countryCode, {double size = 48, ShapeBorder? shape = const CircleBorder()}) {
+  if (countryCode.toLowerCase() != "ir") return CircleFlag(countryCode, size: size, shape: shape);
+  final flag = Assets.images.irShir.svg(width: size, height: size);
+  if (shape == null) return flag;
+  return ClipPath(clipper: ShapeBorderClipper(shape: shape), clipBehavior: Clip.antiAlias, child: flag);
 }
 
 class OrgIconData {

@@ -220,12 +220,11 @@ packages:
   circle_flags:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "19d83cba60de91143491a441b5076583bf1681a8"
-      url: "https://github.com/hiddify-com/flutter_circle_flags.git"
-    source: git
-    version: "4.1.0"
+      name: circle_flags
+      sha256: aa4adae6565cecfc9fbfcb1336bcbabce718c0b0799d4b1bae7ad7e94ad05b75
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   cli_util:
     dependency: transitive
     description:
@@ -314,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  cupertino_ui:
+    dependency: transitive
+    description:
+      name: cupertino_ui
+      sha256: "369e39a1c5c030a6212589c3da1809920b1c2cfade7b02aade7695bfa4b88c3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.6"
   custom_lint_core:
     dependency: transitive
     description:
@@ -644,10 +651,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_svg
-      sha256: c200fd79c918a40c5cd50ea0877fa13f81bdaf6f0a5d3dbcc2a13e3285d6aa1b
+      sha256: "35882981abcbfb8c15b286f0cd690ff25bac12d95eff3e25ee207f37d4c42e7f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.17"
+    version: "2.3.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -1056,6 +1063,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
+  material_ui:
+    dependency: transitive
+    description:
+      name: material_ui
+      sha256: a30f5d0625b6b83770f53ca3f7aafd6fd9d147cb3853f54a70668541046fe5d6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.0"
   maybe_just_nothing:
     dependency: transitive
     description:
@@ -1937,10 +1952,10 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics
-      sha256: "44cc7104ff32563122a929e4620cf3efd584194eec6d1d913eb5ba593dbcf6de"
+      sha256: "82885f6ac633044e7a4e4d8d745724a67aa0dc50af5d8a81ec29379f63c29035"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.18"
+    version: "1.2.6"
   vector_graphics_codec:
     dependency: transitive
     description:
@@ -2078,5 +2093,5 @@ packages:
     source: hosted
     version: "2.2.2"
 sdks:
-  dart: ">=3.13.0-107.0.dev <3.14.0-z"
+  dart: ">=3.13.0 <3.14.0-z"
   flutter: ">=3.47.9 <4.0.0"

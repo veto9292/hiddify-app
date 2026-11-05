@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:circle_flags/circle_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -15,6 +14,7 @@ import 'package:hiddify/features/app_based_routing/model/pkg_flag.dart';
 import 'package:hiddify/features/app_based_routing/overview/app_based_routing_notifier.dart';
 import 'package:hiddify/features/app_based_routing/overview/app_list_notifier.dart';
 import 'package:hiddify/features/app_based_routing/overview/auto_selection_notifier.dart';
+import 'package:hiddify/features/proxy/active/ip_widget.dart';
 import 'package:hiddify/features/route_rules/notifier/rules_notifier.dart';
 import 'package:hiddify/features/route_rules/widget/rule_tile.dart';
 import 'package:hiddify/features/settings/data/config_option_repository.dart';
@@ -170,9 +170,8 @@ class _RegionFlag extends StatelessWidget {
         child: Icon(Icons.public_rounded, size: size * 2 / 3, color: colorScheme.onSurfaceVariant),
       );
     }
-    return CircleFlag(
-      // the lion and sun, as for the IP's country
-      region == Region.ir ? 'ir-shir' : region.name,
+    return countryFlag(
+      region.name,
       size: size,
       shape: RoundedRectangleBorder(borderRadius: borderRadius),
     );
