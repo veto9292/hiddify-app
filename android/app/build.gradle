@@ -3,7 +3,7 @@ plugins {
     id "com.android.application" 
     id "org.jetbrains.kotlin.android" 
     id "dev.flutter.flutter-gradle-plugin" 
-    id "com.google.protobuf" version "0.9.4" 
+    id "com.google.protobuf" version "0.10.0" 
     id "com.squareup.wire" version "5.3.1"
 }
 
@@ -69,10 +69,6 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
-
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -130,6 +126,7 @@ android {
     buildFeatures {
         viewBinding true
         aidl true
+        buildConfig true
     }
 
     packaging {
@@ -145,6 +142,12 @@ android {
 android.applicationVariants.all { variant ->
     variant.outputs.each { output ->
         output.versionCodeOverride = android.defaultConfig.versionCode
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
