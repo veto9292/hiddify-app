@@ -69,7 +69,8 @@ class WindowNotifier extends _$WindowNotifier with AppLogger {
       loggy.debug("restoring window to maximized state");
     }
     if (!silentStart) {
-      await ref.read(windowNotifierProvider.notifier).show(focus: false);
+      // this notifier itself: Riverpod 3 does not let a provider read its own provider
+      await show(focus: false);
       loggy.debug("showing app window on start");
     } else {
       loggy.debug("silent start, remain hidden accessible via tray");
