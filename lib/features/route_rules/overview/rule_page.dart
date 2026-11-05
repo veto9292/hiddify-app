@@ -29,7 +29,7 @@ class RulePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsProvider).requireValue;
-    final isRuleEdited = ref.watch(IsRuleEditedProvider(ruleListOrder));
+    final isRuleEdited = ref.watch(isRuleEditedProvider(ruleListOrder));
     // a built-in rule is shown as it is: its content comes from the app, so nothing here can be changed
     final readOnly = BuiltinRule.of(ref.watch(ruleNotifierProvider(ruleListOrder))) != null;
     // a tap on a read-only rule shakes a red "cannot be changed" notice in under the bar

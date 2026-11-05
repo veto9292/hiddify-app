@@ -36,7 +36,7 @@ class ActiveProxyFooter extends HookConsumerWidget with InfraLogger {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final connectionState = ref.watch(
-      connectionNotifierProvider.select((value) => value.valueOrNull ?? const Disconnected()),
+      connectionNotifierProvider.select((value) => value.value ?? const Disconnected()),
     );
 
     final activeCard = ref.watch(activeProxyCardProvider);

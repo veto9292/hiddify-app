@@ -9,6 +9,7 @@ import 'package:hiddify/singbox/model/singbox_config_enum.dart';
 import 'package:hiddify/singbox/model/singbox_config_option.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 /// The WARP settings of one chain hop: its tunnel, licence and peer first, then the scanner, the
 /// MASQUE and the AmneziaWG tunnels folded away. Only what the hop offers and its tunnel and peer

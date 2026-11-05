@@ -60,7 +60,7 @@ class ConfigOptionNotifier extends _$ConfigOptionNotifier with AppLogger {
     final deadline = DateTime.now().add(_stopWait);
     while (DateTime.now().isBefore(deadline)) {
       final status = ref.read(connectionNotifierProvider);
-      if (status is AsyncError || status.valueOrNull is Disconnected) return;
+      if (status is AsyncError || status.value is Disconnected) return;
       await Future<void>.delayed(const Duration(milliseconds: 50));
     }
     loggy.warning("the core did not report disconnected within $_stopWait; connecting anyway");

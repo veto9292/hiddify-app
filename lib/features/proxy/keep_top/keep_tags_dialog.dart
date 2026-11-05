@@ -138,7 +138,7 @@ class KeepTagsDialog extends HookConsumerWidget {
     final showChosen = useState(true);
 
     // what the core knows of the proxies it runs: ping, speeds
-    final group = ref.watch(proxiesOverviewNotifierProvider).valueOrNull;
+    final group = ref.watch(proxiesOverviewNotifierProvider).value;
     final live = {
       for (final e in group?.items ?? const <OutboundInfo>[])
         if (!e.isGroup) e.tag: e,
@@ -888,7 +888,7 @@ class _ConnectCard extends ConsumerWidget {
     final text = t.dialogs.keepTags;
     final theme = Theme.of(context);
     final s = theme.colorScheme;
-    final status = ref.watch(connectionNotifierProvider).valueOrNull;
+    final status = ref.watch(connectionNotifierProvider).value;
     // connected, the proxies are on their way
     final connecting = status != null && status is! Disconnected;
     return Container(

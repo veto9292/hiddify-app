@@ -168,7 +168,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
   Future<void> _connect() async {
     // UI can show Disconnected while a native start is still blocked on the macOS
     // serial queue. Stacking another start made that worse; cancel once, then retry.
-    if (_singleStart.isRunning && (state.valueOrNull is Disconnected || _singleStart.isStale)) {
+    if (_singleStart.isRunning && (state.value is Disconnected || _singleStart.isStale)) {
       loggy.warning("connect was blocked by a stuck in-flight start; cancelling then retrying");
       _connectEpoch++;
       _singleStart.reset();
@@ -240,7 +240,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
 @Riverpod(keepAlive: true)
 bool serviceRunning(Ref ref) {
   // ref.watch(coreRestartSignalProvider);
-  return ref.watch(connectionNotifierProvider).valueOrNull?.isRunning ?? false;
+  return ref.watch(connectionNotifierProvider).value?.isRunning ?? false;
 }
 
 class SingleCall {

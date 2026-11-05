@@ -250,9 +250,9 @@ class KeepTopFooter extends HookConsumerWidget {
     final busy = useState(false);
     // how many "keep the fastest" keeps, picked beside its button
     final keepCount = useState(keepTopDefault);
-    final profile = ref.watch(activeProfileProvider).valueOrNull;
+    final profile = ref.watch(activeProfileProvider).value;
     if (profile == null) return const SizedBox.shrink();
-    final total = ref.watch(profileProxyCountProvider(profile.id)).valueOrNull ?? 0;
+    final total = ref.watch(profileProxyCountProvider(profile.id)).value ?? 0;
     final keepTop = profile.keepTop;
     // the proxies the user chose run, and only them; the core runs them all when none is left
     final chosen = profile.keepTags.isNotEmpty && listed < total;

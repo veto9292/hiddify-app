@@ -73,7 +73,7 @@ class ProxiesOverviewPage extends HookConsumerWidget with PresLogger {
         children: [
           // the speed of the proxies listed: what it tests and the data it takes show first, and
           // it starts from there
-          if (proxies.valueOrNull case final group?)
+          if (proxies.value case final group?)
             FloatingActionButton.small(
               heroTag: 'upload-test',
               onPressed: () async {

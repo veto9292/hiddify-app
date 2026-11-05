@@ -4,6 +4,11 @@ targets:
       json_serializable:
         options:
           explicit_to_json: true
+      riverpod_generator:
+        options:
+          # keep Riverpod 2's names (class FooNotifier -> fooNotifierProvider); the default
+          # since Riverpod 3 strips "Notifier" (fooProvider)
+          provider_name_strip_pattern: "^$"
       drift_dev:
         options:
           databases:

@@ -277,7 +277,7 @@ class _AppListRow extends ConsumerWidget {
     final t = ref.watch(translationsProvider).requireValue;
     final theme = Theme.of(context);
     final appBasedRouting = t.pages.settings.routing.appBasedRouting;
-    final flags = ref.watch(AppListProvider(mode)).valueOrNull;
+    final flags = ref.watch(appListProvider(mode)).value;
     // the text sits close to the logos and is smaller than a list title; the row is 48 dp, like auto selection
     ListTile row({required Widget leading, required Widget title}) => ListTile(
       minTileHeight: 48,

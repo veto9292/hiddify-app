@@ -82,12 +82,12 @@ class PhoneImport extends _$PhoneImport {
     ));
     _server = server;
     final entries = server.entries.listen((entry) {
-      final current = state.valueOrNull;
+      final current = state.value;
       if (current != null) state = AsyncData(current.copyWith(entries: [...current.entries, entry]));
     });
     unawaited(
       server.whenLocked.then((_) {
-        final current = state.valueOrNull;
+        final current = state.value;
         if (current != null) state = AsyncData(current.copyWith(locked: true));
       }),
     );
@@ -100,7 +100,7 @@ class PhoneImport extends _$PhoneImport {
 
   /// [entry] was imported or discarded on the TV.
   void handled(PhoneEntry entry) {
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
     _server?.handled();
     state = AsyncData(current.copyWith(entries: current.entries.where((e) => e != entry).toList()));

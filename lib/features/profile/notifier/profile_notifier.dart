@@ -50,6 +50,8 @@ class AddProfileNotifier extends _$AddProfileNotifier with AppLogger {
                 .read(dialogNotifierProvider.notifier)
                 .showCustomAlertFromErr(t.presentError(error, action: t.pages.profiles.msg.add.failure));
           }
+        default:
+          break;
       }
     });
     ref.onDispose(() {

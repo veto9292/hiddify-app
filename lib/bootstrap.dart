@@ -48,6 +48,8 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
     overrides: [environmentProvider.overrideWithValue(env)],
     // every provider change with its value: far too much to log by default
     observers: [if (const bool.fromEnvironment('riverpod_log')) RiverpodObserver()],
+    // Riverpod 3 retries failing providers by default; a failure must stay visible, as in Riverpod 2
+    retry: (_, _) => null,
   );
 
   await _init("directories", () => container.read(appDirectoriesProvider.future));

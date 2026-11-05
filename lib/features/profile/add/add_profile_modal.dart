@@ -27,10 +27,10 @@ class AddProfileModal extends HookConsumerWidget {
     ref.listen(freeSwitchNotifierProvider, (_, _) {});
     // On Android TV the sheet serves the page a phone sends a link to, while it is open; each
     // link waits for the user to import it here.
-    if (ref.watch(isAndroidTvProvider).valueOrNull ?? false) {
+    if (ref.watch(isAndroidTvProvider).value ?? false) {
       ref.listen(phoneImportProvider, (previous, next) {
-        final seen = previous?.valueOrNull?.entries ?? const [];
-        for (final entry in next.valueOrNull?.entries ?? const <PhoneEntry>[]) {
+        final seen = previous?.value?.entries ?? const [];
+        for (final entry in next.value?.entries ?? const <PhoneEntry>[]) {
           if (!seen.contains(entry)) _reviewPhoneEntry(context, ref, entry);
         }
       });
@@ -77,7 +77,7 @@ class AddProfileOptions extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // final isLoadingProfile = ref.watch(addProfileNotifierProvider).isLoading;
     final freeSwitch = ref.watch(freeSwitchNotifierProvider);
-    final isTv = ref.watch(isAndroidTvProvider).valueOrNull ?? false;
+    final isTv = ref.watch(isAndroidTvProvider).value ?? false;
     // a TV has no camera to scan with, so it has the desktop's three buttons
     final threeButtons = PlatformUtils.isDesktop || isTv;
     final isDesktop = PlatformUtils.isDesktop;

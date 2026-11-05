@@ -26,7 +26,7 @@ class _ConnectionWrapperState extends ConsumerState<ConnectionWrapper> with AppL
   Widget build(BuildContext context) {
     ref.listen(connectionNotifierProvider, (previous, next) async {
       // a big profile that connected: ask once whether only its fastest proxies run
-      if (next case AsyncData(value: Connected()) when previous?.valueOrNull is! Connected) {
+      if (next case AsyncData(value: Connected()) when previous?.value is! Connected) {
         await ref.read(keepTopNotifierProvider.notifier).askIfBig(await ref.read(activeProfileProvider.future));
       }
     });
@@ -39,7 +39,7 @@ class _ConnectionWrapperState extends ConsumerState<ConnectionWrapper> with AppL
     // a profile added, or chosen; not the one loaded at start, nothing was asked of the user yet
     ref.listen(activeProfileProvider, (previous, next) async {
       if (previous == null || previous.isLoading) return;
-      if (next.valueOrNull case final profile? when profile.id != previous.valueOrNull?.id) {
+      if (next.value case final profile? when profile.id != previous.value?.id) {
         await ref.read(keepTopNotifierProvider.notifier).askIfBig(profile);
       }
     });
