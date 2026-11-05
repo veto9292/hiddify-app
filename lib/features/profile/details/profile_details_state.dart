@@ -9,7 +9,7 @@ part 'profile_details_state.freezed.dart';
 typedef EditableConfig = ({String text, bool isJson});
 
 @freezed
-class ProfileDetailsState with _$ProfileDetailsState {
+abstract class ProfileDetailsState with _$ProfileDetailsState {
   const ProfileDetailsState._();
 
   const factory ProfileDetailsState({

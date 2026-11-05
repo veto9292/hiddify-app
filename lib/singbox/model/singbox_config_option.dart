@@ -10,7 +10,7 @@ part 'singbox_config_option.freezed.dart';
 part 'singbox_config_option.g.dart';
 
 @freezed
-class SingboxConfigOption with _$SingboxConfigOption {
+abstract class SingboxConfigOption with _$SingboxConfigOption {
   const SingboxConfigOption._();
 
   @JsonSerializable(fieldRename: FieldRename.kebab)
@@ -83,7 +83,7 @@ class SingboxConfigOption with _$SingboxConfigOption {
 }
 
 @freezed
-class SingboxExtraSecurityOption with _$SingboxExtraSecurityOption {
+abstract class SingboxExtraSecurityOption with _$SingboxExtraSecurityOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxExtraSecurityOption({
     // the core's key (ChainMode.coreKey): a WARP hop's names its tunnel
@@ -97,7 +97,7 @@ class SingboxExtraSecurityOption with _$SingboxExtraSecurityOption {
 }
 
 @freezed
-class SingboxUnblockerOption with _$SingboxUnblockerOption {
+abstract class SingboxUnblockerOption with _$SingboxUnblockerOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxUnblockerOption({
     // the core's key (ChainMode.coreKey): a WARP hop's names its tunnel
@@ -112,7 +112,7 @@ class SingboxUnblockerOption with _$SingboxUnblockerOption {
 
 /// The endpoint scan of a WARP hop. Zero and empty keep the scanner's own defaults.
 @freezed
-class SingboxWarpScannerOption with _$SingboxWarpScannerOption {
+abstract class SingboxWarpScannerOption with _$SingboxWarpScannerOption {
   const SingboxWarpScannerOption._();
 
   @JsonSerializable(fieldRename: FieldRename.kebab)
@@ -137,7 +137,7 @@ class SingboxWarpScannerOption with _$SingboxWarpScannerOption {
 
 /// The MASQUE tunnel of a WARP hop (the masque and auto tunnels).
 @freezed
-class SingboxWarpMasqueOption with _$SingboxWarpMasqueOption {
+abstract class SingboxWarpMasqueOption with _$SingboxWarpMasqueOption {
   const SingboxWarpMasqueOption._();
 
   @JsonSerializable(fieldRename: FieldRename.kebab)
@@ -169,7 +169,7 @@ class SingboxWarpMasqueOption with _$SingboxWarpMasqueOption {
 
 /// The AmneziaWG tunnel of a WARP hop (the awg and auto tunnels). All zero keeps the core's preset.
 @freezed
-class SingboxWarpAwgOption with _$SingboxWarpAwgOption {
+abstract class SingboxWarpAwgOption with _$SingboxWarpAwgOption {
   const SingboxWarpAwgOption._();
 
   @JsonSerializable(fieldRename: FieldRename.kebab)
@@ -199,7 +199,7 @@ class SingboxWarpAwgOption with _$SingboxWarpAwgOption {
 }
 
 @freezed
-class SingboxExtraSecurityWarpOption with _$SingboxExtraSecurityWarpOption {
+abstract class SingboxExtraSecurityWarpOption with _$SingboxExtraSecurityWarpOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxExtraSecurityWarpOption({
     required String licenseKey,
@@ -218,7 +218,7 @@ class SingboxExtraSecurityWarpOption with _$SingboxExtraSecurityWarpOption {
 }
 
 @freezed
-class SingboxUnblockerWarpOption with _$SingboxUnblockerWarpOption {
+abstract class SingboxUnblockerWarpOption with _$SingboxUnblockerWarpOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxUnblockerWarpOption({
     required String licenseKey,
@@ -240,7 +240,7 @@ class SingboxUnblockerWarpOption with _$SingboxUnblockerWarpOption {
 }
 
 @freezed
-class SingboxExtraSecurityPsiphonOption with _$SingboxExtraSecurityPsiphonOption {
+abstract class SingboxExtraSecurityPsiphonOption with _$SingboxExtraSecurityPsiphonOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxExtraSecurityPsiphonOption({required PsiphonRegion region, required String conduitPairingId}) =
       _SingboxExtraSecurityPsiphonOption;
@@ -250,7 +250,7 @@ class SingboxExtraSecurityPsiphonOption with _$SingboxExtraSecurityPsiphonOption
 }
 
 @freezed
-class SingboxUnblockerPsiphonOption with _$SingboxUnblockerPsiphonOption {
+abstract class SingboxUnblockerPsiphonOption with _$SingboxUnblockerPsiphonOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxUnblockerPsiphonOption({required PsiphonRegion region, required String conduitPairingId}) =
       _SingboxUnblockerPsiphonOption;
@@ -260,7 +260,7 @@ class SingboxUnblockerPsiphonOption with _$SingboxUnblockerPsiphonOption {
 }
 
 @freezed
-class SingboxExtraSecurityProfileOption with _$SingboxExtraSecurityProfileOption {
+abstract class SingboxExtraSecurityProfileOption with _$SingboxExtraSecurityProfileOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxExtraSecurityProfileOption({required String? id}) = _SingboxExtraSecurityProfileOption;
 
@@ -269,7 +269,7 @@ class SingboxExtraSecurityProfileOption with _$SingboxExtraSecurityProfileOption
 }
 
 @freezed
-class SingboxUnblockerProfileOption with _$SingboxUnblockerProfileOption {
+abstract class SingboxUnblockerProfileOption with _$SingboxUnblockerProfileOption {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxUnblockerProfileOption({required String? id}) = _SingboxUnblockerProfileOption;
 
@@ -291,7 +291,7 @@ class SingboxUnblockerProfileOption with _$SingboxUnblockerProfileOption {
 // }
 
 @freezed
-class SingboxTlsTricks with _$SingboxTlsTricks {
+abstract class SingboxTlsTricks with _$SingboxTlsTricks {
   @JsonSerializable(fieldRename: FieldRename.kebab)
   const factory SingboxTlsTricks({
     required bool enableFragment,
