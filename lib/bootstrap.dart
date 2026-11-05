@@ -35,6 +35,7 @@ import 'package:hiddify/hiddifycore/hiddify_core_service_provider.dart';
 import 'package:hiddify/riverpod_observer.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/misc.dart' show ProviderListenable;
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async {
@@ -54,18 +55,18 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
     retry: (_, _) => null,
   );
 
-  await _init("directories", () => container.read(appDirectoriesProvider.future));
+  await _init("directories", () => _awaitListened(container, appDirectoriesProvider.future));
   // phase 2 — the folders exist, so app.log can be opened
   logAddFile(container.read(logPathResolverProvider).appFile().path);
   openAppCrashStore(container.read(appDirectoriesProvider).requireValue.workingDir.path);
 
-  final appInfo = await _init("app info", () => container.read(appInfoProvider.future));
-  await _init("preferences", () => container.read(sharedPreferencesProvider.future));
+  final appInfo = await _init("app info", () => _awaitListened(container, appInfoProvider.future));
+  await _init("preferences", () => _awaitListened(container, sharedPreferencesProvider.future));
   // The ring starts at a safe default and only now learns the size the user
   // picked, since nothing could be read from disk before this point.
   logRing.capacity = container.read(Preferences.logBufferSize);
 
-  final enableAnalytics = await container.read(analyticsControllerProvider.future);
+  final enableAnalytics = await _awaitListened(container, analyticsControllerProvider.future);
   if (enableAnalytics) {
     await _init("analytics", () => container.read(analyticsControllerProvider.notifier).enableAnalytics());
   }
@@ -93,7 +94,7 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
   }
 
   if (PlatformUtils.isDesktop) {
-    await _init("window controller", () => container.read(windowNotifierProvider.future));
+    await _init("window controller", () => _awaitListened(container, windowNotifierProvider.future));
 
     final silentStart = container.read(Preferences.silentStart);
     Logger.bootstrap.debug("silent start [${silentStart ? "Enabled" : "Disabled"}]");
@@ -102,7 +103,7 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
     } else {
       Logger.bootstrap.debug("silent start, remain hidden accessible via tray");
     }
-    await _init("auto start service", () => container.read(autoStartNotifierProvider.future));
+    await _init("auto start service", () => _awaitListened(container, autoStartNotifierProvider.future));
   }
   // phase 3 — the file is kept everywhere: after a crash, it is the only log
   // of the run that crashed, and the report sends it. Only errors reach it,
@@ -113,20 +114,20 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
   logMarkRun(appInfo.format());
   Logger.bootstrap.info(appInfo.format());
 
-  await _init("translations", () => container.read(translationsProvider.future));
+  await _init("translations", () => _awaitListened(container, translationsProvider.future));
 
   await _init("database", () => _openDatabase(container));
 
-  await _init("profile repository", () => container.read(profileRepositoryProvider.future));
+  await _init("profile repository", () => _awaitListened(container, profileRepositoryProvider.future));
 
-  await _safeInit("active profile", () => container.read(activeProfileProvider.future), timeout: 1000);
+  await _safeInit("active profile", () => _awaitListened(container, activeProfileProvider.future), timeout: 1000);
   await _init(
     "chain profile extra security",
-    () => container.read(chainProfileNotifierProvider(ChainType.extraSecurity).future),
+    () => _awaitListened(container, chainProfileNotifierProvider(ChainType.extraSecurity).future),
   );
   await _init(
     "chain profile unblocker",
-    () => container.read(chainProfileNotifierProvider(ChainType.unblocker).future),
+    () => _awaitListened(container, chainProfileNotifierProvider(ChainType.unblocker).future),
   );
   await _safeInit("hiddify-core", () => container.read(hiddifyCoreServiceProvider).init());
 
@@ -244,5 +245,16 @@ Future<T?> _safeInit<T>(String name, Future<T> Function() initializer, {int? tim
     return await _init(name, initializer, timeout: timeout);
   } catch (e) {
     return null;
+  }
+}
+
+/// Waits for [future] while listening to it. Riverpod 3 pauses a provider nobody listens to, and a
+/// paused StreamProvider never completes its future, so a plain `container.read(p.future)` can hang.
+Future<T> _awaitListened<T>(ProviderContainer container, ProviderListenable<Future<T>> future) async {
+  final subscription = container.listen(future, (_, _) {});
+  try {
+    return await subscription.read();
+  } finally {
+    subscription.close();
   }
 }
