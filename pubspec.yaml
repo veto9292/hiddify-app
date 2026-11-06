@@ -96,7 +96,7 @@ dependencies:
   # # then add path to "environment variable" e.g. -> C:\Users\%USERPROFILE%\AppData\Local\Pub\Cache\global_packages\protoc_plugin\bin
   protobuf: ^5.0.0
   grpc: ^4.0.1
-  dynamic_color: ^1.7.0
+  dynamic_color: ^1.8.1
   flutter_typeahead: ^5.0.1
   # flutter_platform_widgets: ^7.0.1
   simple_icons: ^16.23.0
@@ -105,7 +105,7 @@ dependencies:
   flutter_markdown_plus: ^1.0.6
   # platform-specific  settings
   # https://github.com/miguelpruivo/flutter_file_picker/wiki/Setup
-  file_picker: ^8.1.7
+  file_picker: ^10.3.10
   # Used for reading the .zip files picked in the profile file import
   archive: ^4.0.4
   installed_apps: # ^1.5.2
