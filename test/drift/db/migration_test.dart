@@ -74,7 +74,7 @@ void main() {
   group('_columnExists-backed migrations', () {
     test('migration from v3 to v4 adds test_url when missing', () async {
       final schema = await verifier.schemaAt(3);
-      addTearDown(() => schema.rawDatabase.dispose());
+      addTearDown(() => schema.rawDatabase.close());
 
       final oldDb = v3.DatabaseAtV3(schema.newConnection());
       final oldColumns = await oldDb
@@ -106,7 +106,7 @@ void main() {
       'migration from v3 to v4 skips adding test_url when it already exists',
       () async {
         final schema = await verifier.schemaAt(3);
-        addTearDown(() => schema.rawDatabase.dispose());
+        addTearDown(() => schema.rawDatabase.close());
 
         schema.rawDatabase.execute(
           'ALTER TABLE profile_entries ADD COLUMN test_url TEXT NULL;',

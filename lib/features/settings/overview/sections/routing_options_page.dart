@@ -76,7 +76,7 @@ class RoutingOptionsPage extends HookConsumerWidget {
             const _PinnedOptions(),
           ],
         ),
-        onReorder: ref.read(rulesNotifierProvider.notifier).reorder,
+        onReorderItem: ref.read(rulesNotifierProvider.notifier).reorder,
         itemBuilder: (context, index) => RuleTile(key: Key('$index'), index: index, rule: rules[index]),
         itemCount: rules.length,
       ),

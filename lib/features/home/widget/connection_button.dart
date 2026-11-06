@@ -321,7 +321,7 @@ class _ConnectionButton extends HookWidget {
     // A timer does not stop with its tickers, so it stops itself while the button cannot be
     // seen: under another tab, sheet or route (TickerMode), or with the app in the background.
     // Inactive stays on: on desktop that is only the window without focus.
-    final ticking = useValueListenable(TickerMode.getNotifier(context));
+    final ticking = useValueListenable(TickerMode.getValuesNotifier(context)).enabled;
     final shown = switch (useAppLifecycleState()) {
       AppLifecycleState.paused || AppLifecycleState.hidden || AppLifecycleState.detached => false,
       _ => true,
