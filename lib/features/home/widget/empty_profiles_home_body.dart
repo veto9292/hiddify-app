@@ -20,7 +20,7 @@ class EmptyProfilesHomeBody extends HookConsumerWidget {
           const Gap(16),
           ElevatedButton(
             onPressed: () => ref.read(bottomSheetsNotifierProvider.notifier).showAddProfile(),
-            // icon: const Icon(FluentIcons.add_24_regular),
+            // icon: const Icon(Icons.add_rounded),
             child: Text(t.pages.profiles.add),
           ),
         ],

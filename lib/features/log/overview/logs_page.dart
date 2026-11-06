@@ -108,19 +108,19 @@ class _LogsPageState extends ConsumerState<LogsPage> with PresLogger {
           const SizedBox(width: 4),
           IconButton(
             onPressed: state.paused ? notifier.resume : notifier.pause,
-            icon: Icon(state.paused ? FluentIcons.play_20_regular : FluentIcons.pause_20_regular),
+            icon: Icon(state.paused ? Icons.play_arrow_rounded : Icons.pause_rounded),
             tooltip: state.paused ? t.common.resume : t.common.pause,
             iconSize: 20,
           ),
           IconButton(
             onPressed: notifier.clear,
-            icon: const Icon(FluentIcons.delete_lines_20_regular),
+            icon: const Icon(Icons.delete_sweep_outlined),
             tooltip: t.common.clear,
             iconSize: 20,
           ),
           IconButton(
             onPressed: () => ref.read(bottomSheetsNotifierProvider.notifier).showLogsShare(),
-            icon: const Icon(FluentIcons.share_20_regular),
+            icon: const Icon(Icons.share_rounded),
             tooltip: t.common.share,
             iconSize: 20,
           ),
@@ -360,7 +360,7 @@ class LogFilterBar extends ConsumerWidget {
         hintText: t.common.filter,
         hintStyle: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
         contentPadding: const EdgeInsets.only(right: 10, top: 9, bottom: 9),
-        prefixIcon: Icon(FluentIcons.search_20_regular, size: 15, color: theme.colorScheme.onSurfaceVariant),
+        prefixIcon: Icon(Icons.search_rounded, size: 15, color: theme.colorScheme.onSurfaceVariant),
         prefixIconConstraints: const BoxConstraints(minWidth: 30),
       ),
     );
@@ -468,7 +468,7 @@ class _LogRow extends ConsumerWidget {
           value: true,
           child: Row(
             children: [
-              const Icon(FluentIcons.copy_20_regular, size: 18),
+              const Icon(Icons.copy_rounded, size: 18),
               const SizedBox(width: 10),
               Text(t.common.addToClipboard),
             ],

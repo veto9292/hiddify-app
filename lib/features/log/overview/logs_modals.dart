@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hiddify/core/localization/translations.dart';
@@ -58,7 +57,7 @@ class LogsShareModal extends ConsumerWidget {
         children: [
           const SizedBox(height: 8),
           ListTile(
-            leading: const Icon(FluentIcons.history_20_regular),
+            leading: const Icon(Icons.history_rounded),
             title: Text(t.pages.logs.recentLogs),
             subtitle: Text(t.pages.logs.recentLogsMsg),
             onTap: () {
@@ -68,7 +67,7 @@ class LogsShareModal extends ConsumerWidget {
           ),
           for (final (title, subtitle, file) in files)
             ListTile(
-              leading: const Icon(FluentIcons.document_20_regular),
+              leading: const Icon(Icons.description_outlined),
               title: Text(title),
               subtitle: Text(subtitle),
               onTap: () async {
@@ -79,7 +78,7 @@ class LogsShareModal extends ConsumerWidget {
           // everything at once, as the crash dialog sends it: reports, logs, goroutines, the app's
           // state and the config without servers or secrets, sent to the developers or saved
           ListTile(
-            leading: const Icon(FluentIcons.folder_zip_20_regular),
+            leading: const Icon(Icons.folder_zip_outlined),
             title: Text(t.pages.logs.diagnostics),
             subtitle: Text(t.pages.logs.diagnosticsMsg),
             onTap: () async {
@@ -165,7 +164,7 @@ class _LogsRecentModalState extends ConsumerState<LogsRecentModal> {
                           Navigator.of(context).pop();
                           await _copyLines(matches, t: t, notifications: notifications);
                         },
-                        icon: const Icon(FluentIcons.copy_20_regular, size: 18),
+                        icon: const Icon(Icons.copy_rounded, size: 18),
                         label: Text(t.common.addToClipboard),
                       ),
                       const SizedBox(width: 10),
@@ -174,7 +173,7 @@ class _LogsRecentModalState extends ConsumerState<LogsRecentModal> {
                           Navigator.of(context).pop();
                           await _exportLines(matches, t: t, notifications: notifications, paths: paths);
                         },
-                        icon: const Icon(FluentIcons.arrow_download_20_regular, size: 18),
+                        icon: const Icon(Icons.vertical_align_bottom_rounded, size: 18),
                         label: Text(t.pages.logs.exportToFile),
                       ),
                     ],

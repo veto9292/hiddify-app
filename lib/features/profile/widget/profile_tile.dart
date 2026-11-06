@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hiddify/core/localization/translations.dart';
@@ -19,7 +20,6 @@ import 'package:hiddify/features/profile/overview/profiles_notifier.dart';
 import 'package:hiddify/gen/fonts.gen.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:simple_icons/simple_icons.dart';
 
 class ProfileTile extends HookConsumerWidget {
   const ProfileTile({super.key, required this.profile, this.isMain = false, this.margin = EdgeInsets.zero});
@@ -442,11 +442,12 @@ class ProfileLinkButtons extends HookConsumerWidget {
   }
 
   /// Brand icon for the link's platform (leading), or null for a generic site.
-  static IconData? _leadingIcon(String url) {
+  /// The logo SVG of a known support host, null for any other.
+  static String? _leadingIcon(String url) {
     final host = Uri.parse(url).host;
     final bare = host.startsWith("www.") ? host.substring(4) : host;
-    if (const ["t.me", "telegram.me"].contains(bare)) return SimpleIcons.telegram;
-    if (bare == "github.com") return SimpleIcons.github;
+    if (const ["t.me", "telegram.me"].contains(bare)) return "assets/images/orgs/telegram.svg";
+    if (bare == "github.com") return "assets/images/orgs/github.svg";
     return null;
   }
 
@@ -492,7 +493,12 @@ class ProfileLinkButtons extends HookConsumerWidget {
           child: Row(
             children: [
               if (_leadingIcon(url) case final icon?) ...[
-                Icon(icon, size: 24, color: theme.colorScheme.onSurfaceVariant),
+                SvgPicture.asset(
+                  icon,
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(theme.colorScheme.onSurfaceVariant, BlendMode.srcIn),
+                ),
                 const Gap(8),
               ],
               Expanded(

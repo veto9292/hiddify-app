@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hiddify/core/router/go_router/helper/active_breakpoint_notifier.dart';
@@ -162,9 +161,9 @@ class SnackBarHost extends StatelessWidget {
 
 extension NotificationTypeX on NotificationType {
   IconData get _icon => switch (this) {
-    NotificationType.success => FluentIcons.checkmark_circle_24_regular,
-    NotificationType.error => FluentIcons.dismiss_circle_24_regular,
-    NotificationType.info => FluentIcons.info_24_regular,
+    NotificationType.success => Icons.check_circle_outline_rounded,
+    NotificationType.error => Icons.cancel_outlined,
+    NotificationType.info => Icons.info_outline_rounded,
   };
 
   Color get _color => switch (this) {

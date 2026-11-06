@@ -217,14 +217,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
-  circle_flags:
-    dependency: "direct main"
-    description:
-      name: circle_flags
-      sha256: aa4adae6565cecfc9fbfcb1336bcbabce718c0b0799d4b1bae7ad7e94ad05b75
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   cli_util:
     dependency: transitive
     description:
@@ -317,10 +309,10 @@ packages:
     dependency: transitive
     description:
       name: cupertino_ui
-      sha256: "369e39a1c5c030a6212589c3da1809920b1c2cfade7b02aade7695bfa4b88c3a"
+      sha256: c3eaf7f5bdfee36deb0b14a4cbf7602f1b6b8d8b8576b81f38fc08c25881c94c
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.1.7"
   dart_mappable:
     dependency: "direct main"
     description:
@@ -489,14 +481,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  fluentui_system_icons:
-    dependency: "direct main"
-    description:
-      name: fluentui_system_icons
-      sha256: "1592ae32dae75fb66741ab2c0607bc6554ef086f1c457e27ef937fb4901d33da"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.273"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -665,14 +649,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  font_awesome_flutter:
-    dependency: "direct main"
-    description:
-      name: font_awesome_flutter
-      sha256: "09dcde8ab90ffae1a7d65ff2ef96fc62a17ad9d0ce7c127b317ded676b0d5935"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.0.0"
   fpdart:
     dependency: "direct main"
     description:
@@ -966,6 +942,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.15.2"
+  l10n_countries:
+    dependency: transitive
+    description:
+      name: l10n_countries
+      sha256: "6cec4213a2aac896645a0e10de84d35e72bde1c828d0e245a499da7907fc3e2c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
+  l10n_currencies:
+    dependency: transitive
+    description:
+      name: l10n_currencies
+      sha256: f5019012369f305a8c336e21798d74e46daf656ab7fecd3f1f9a7b8d2e6fac8d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
+  l10n_languages:
+    dependency: transitive
+    description:
+      name: l10n_languages
+      sha256: "01a1ef7005a1d4a5623e2c1493ab8e08f93cdc1d5ef2082006feb165dd8efc55"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   launch_at_startup:
     dependency: "direct main"
     description:
@@ -1050,10 +1050,10 @@ packages:
     dependency: transitive
     description:
       name: material_ui
-      sha256: a30f5d0625b6b83770f53ca3f7aafd6fd9d147cb3853f54a70668541046fe5d6
+      sha256: a6b19012df437a356cbc01f8ea22a105e07194c47c9a6009da0032a0ce35c4ab
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.11.1"
   maybe_just_nothing:
     dependency: transitive
     description:
@@ -1494,6 +1494,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  sealed_countries:
+    dependency: transitive
+    description:
+      name: sealed_countries
+      sha256: c58fad383e245f4ed6b0b89bc8f8028dcaae7e9a64d59ab298ef5367c60ce599
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.2"
+  sealed_currencies:
+    dependency: transitive
+    description:
+      name: sealed_currencies
+      sha256: "86d7f402406bed7de6b2ace3c7c12b1a2488260a2e1327e0b1188572ea0e3cca"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.1"
+  sealed_languages:
+    dependency: transitive
+    description:
+      name: sealed_languages
+      sha256: "0a3dfb7ea748de29d697fb98c1480eac6e0e379f29ef86b16f931b033d7abe20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.1"
   sentry:
     dependency: "direct main"
     description:
@@ -1614,14 +1638,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.2"
-  simple_icons:
-    dependency: "direct main"
-    description:
-      name: simple_icons
-      sha256: "21246ffcaaf9f560695596093c2ecf9fa763fd112a15916fbe7d282932430bae"
-      url: "https://pub.dev"
-    source: hosted
-    version: "16.23.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -2067,6 +2083,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  world_flags:
+    dependency: "direct main"
+    description:
+      name: world_flags
+      sha256: "5366d68363b2612a7b3eb573059eb86171767396cdf376a9503d0f4e67562f8d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.0"
   xdg_directories:
     dependency: transitive
     description:
@@ -2100,5 +2124,5 @@ packages:
     source: hosted
     version: "2.2.4"
 sdks:
-  dart: ">=3.13.0 <3.15.0-z"
+  dart: ">=3.13.4 <3.15.0-z"
   flutter: ">=3.47.9 <4.0.0"

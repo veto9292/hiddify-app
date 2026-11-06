@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hiddify/core/localization/translations.dart';
@@ -64,7 +63,7 @@ class ActiveProxyDelayIndicator extends HookConsumerWidget with InfraLogger {
             width: 28,
             height: 28,
             decoration: BoxDecoration(color: error.withValues(alpha: .18), shape: BoxShape.circle),
-            child: Center(child: Icon(FluentIcons.wifi_off_24_regular, size: 16, color: error)),
+            child: Center(child: Icon(Icons.wifi_off_rounded, size: 16, color: error)),
           ),
           const Gap(8),
           Icon(Icons.bolt_rounded, size: 18, color: green),
@@ -76,7 +75,7 @@ class ActiveProxyDelayIndicator extends HookConsumerWidget with InfraLogger {
         key: const ValueKey('dead'),
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(FluentIcons.wifi_off_24_regular, size: 18, color: error),
+          Icon(Icons.wifi_off_rounded, size: 18, color: error),
           const Gap(6),
           Text(t.pages.proxies.delay.unavailable, style: bold?.copyWith(color: error)),
         ],
@@ -85,7 +84,7 @@ class ActiveProxyDelayIndicator extends HookConsumerWidget with InfraLogger {
         key: ValueKey(delay),
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(FluentIcons.wifi_1_24_regular, size: 20),
+          const Icon(Icons.wifi_rounded, size: 20),
           const Gap(6),
           if (isValid)
             Text.rich(

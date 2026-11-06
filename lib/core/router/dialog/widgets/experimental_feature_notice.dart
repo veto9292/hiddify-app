@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -37,15 +36,15 @@ class ExperimentalFeatureNoticeDialog extends HookConsumerWidget {
               CheckboxListTile(
                 value: disableNotice,
                 title: Text(t.dialogs.experimentalNotice.disable),
-                secondary: const Icon(FluentIcons.eye_off_24_regular),
+                secondary: const Icon(Icons.visibility_off_outlined),
                 onChanged: (value) async =>
                     await ref.read(disableExperimentalFeatureNoticeProvider.notifier).update(value ?? false),
                 dense: true,
               ),
               ListTile(
                 title: Text(t.pages.settings.title),
-                leading: const Icon(FluentIcons.box_edit_24_regular),
-                trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                leading: const Icon(Icons.inventory_2_outlined),
+                trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
                   context.pop(false);
                   context.goNamed('settings');
