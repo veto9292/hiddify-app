@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sentry/sentry.dart';
 
 final class SentryRiverpodObserver extends ProviderObserver {
   void addBreadcrumb(String message, {Map<String, dynamic>? data}) {
