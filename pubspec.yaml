@@ -88,7 +88,7 @@ dependencies:
   # flutter_easy_permission:
   #   git: https://github.com/MichaelStH/flutter_easy_permission.git
   in_app_review: ^2.0.10
-  circle_flags: ^7.0.0
+  country_flags: ^4.1.2
   fixnum: ^1.1.0
   # # for using protobuf install protoc from this link -> https://github.com/protocolbuffers/protobuf/releases
   # # then add path to "environment variable" e.g. -> C:\src\protoc-28.3-win64\bin
@@ -160,7 +160,7 @@ flutter:
     # - assets/core/geoip.db
     # - assets/core/geosite.db
     - assets/images/logo.svg
-    # Iran's lion and sun flag, which circle_flags doesn't have
+    # Iran's lion and sun flag, which country_flags doesn't have
     - assets/images/ir_shir.svg
     - assets/images/tray_icon.ico
     - assets/images/tray_icon.png

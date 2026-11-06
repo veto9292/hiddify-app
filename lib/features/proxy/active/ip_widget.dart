@@ -1,4 +1,4 @@
-import 'package:circle_flags/circle_flags.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -144,11 +144,13 @@ class IPCountryFlag extends HookConsumerWidget {
   }
 }
 
-/// The flag of [countryCode], clipped to [shape] (square when null). Iran shows the lion and
-/// sun, which circle_flags doesn't have; every other country comes from circle_flags.
+/// The flag of [countryCode] as a [size] square, clipped to [shape] (square when null). Iran shows
+/// the lion and sun, which country_flags doesn't have; every other country comes from
+/// country_flags, its rectangle cropped to the square.
 Widget countryFlag(String countryCode, {double size = 48, ShapeBorder? shape = const CircleBorder()}) {
-  if (countryCode.toLowerCase() != "ir") return CircleFlag(countryCode, size: size, shape: shape);
-  final flag = Assets.images.irShir.svg(width: size, height: size);
+  final Widget flag = countryCode.toLowerCase() == "ir"
+      ? Assets.images.irShir.svg(width: size, height: size, fit: BoxFit.cover)
+      : CountryFlag.fromCountryCode(countryCode, theme: ImageTheme(width: size, height: size));
   if (shape == null) return flag;
   // the text direction resolves directional shapes, such as the routing page's BorderRadiusDirectional
   return Builder(
