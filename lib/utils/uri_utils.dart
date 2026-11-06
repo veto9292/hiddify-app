@@ -22,7 +22,7 @@ abstract class UriUtils {
         loggy.warning("can't launch [$uri]");
         return false;
       }
-      return launchUrl(uri, mode: LaunchMode.externalApplication);
+      return await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (e, stackTrace) {
       loggy.warning("error launching [$uri]", e, stackTrace);
       return false;

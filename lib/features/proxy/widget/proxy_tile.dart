@@ -336,7 +336,7 @@ class _Logo extends StatelessWidget {
 
   /// The first [bars] columns in [color], the rest faint.
   factory _Logo.lit(Color color, {required int bars}) =>
-      _Logo([for (var b = 0; b < 3; b++) b < bars ? color : color.withValues(alpha: .25)]);
+      _Logo([for (var b = 0; b < 3; b++) if (b < bars) color else color.withValues(alpha: .25)]);
 
   /// Waiting: the columns light up in turn, then dim in turn. Their size never changes. A slow
   /// loop: a page of rows waiting for their first ping should read as calm, not busy.

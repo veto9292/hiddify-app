@@ -588,7 +588,8 @@ class HiddifyCoreService with InfraLogger {
   Future<void> startListeningStatus(String key, CoreClient cc) async {
     if (core.managedStatus != null) {
       if (subscriptions.containsKey('managedStatus')) return;
-      subscriptions['managedStatus'] = core.managedStatus!.listen((status) {
+      subscriptions['managedStatus'] = core.managedStatus!.listen((platformStatus) {
+        var status = platformStatus;
         final wasStarted = _platformStatus is CoreStarted;
         _platformStatus = status;
         if (status is CoreStarted) {
