@@ -11,6 +11,19 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+// Several plugins pin compileSdk 31 or 33, while the AndroidX versions the app resolves need 34,
+// and AGP 9 fails their AAR metadata check. Raise those to 34 only: at 36 some plugins
+// (installed_apps) no longer compile, as SDK 36 marks PackageInfo.applicationInfo nullable.
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.library")) {
+            def sdk = project.android.compileSdkVersion
+            if (sdk != null && (sdk.replace("android-", "") as int) < 34) {
+                project.android.compileSdkVersion 34
+            }
+        }
+    }
+}
 subprojects {
     project.evaluationDependsOn(':app')
 }
