@@ -348,7 +348,7 @@ class _ConnectionButton extends HookWidget {
     // both; App turns it off for the whole app when the app is not visible.
     // both hooks run on every build: `a && b` would skip the second while TickerMode is off and
     // shift every hook after it, so returning to home threw and showed a grey box
-    final tickerOn = useValueListenable(TickerMode.getNotifier(context));
+    final tickerOn = useValueListenable(TickerMode.getValuesNotifier(context)).enabled;
     // a new look wakes the endless decoration round the button, the chain badge's shine: the chain
     // hop coming up after a long wait changes the look but not the connection. The wake comes
     // after the frame, since it rebuilds everything else that moves

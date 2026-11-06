@@ -66,7 +66,7 @@ class _LogsPageState extends ConsumerState<LogsPage> with PresLogger {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final visible = TickerMode.of(context);
+    final visible = TickerMode.valuesOf(context).enabled;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref.read(logsOverviewNotifierProvider.notifier).setVisible(visible);
