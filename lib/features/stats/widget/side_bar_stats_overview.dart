@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hiddify/core/localization/translations.dart';
@@ -41,7 +40,7 @@ class SideBarStatsOverview extends HookConsumerWidget {
               icon: AnimatedRotation(
                 turns: showAll ? 1 : 0.5,
                 duration: kAnimationDuration,
-                child: const Icon(FluentIcons.chevron_down_16_regular, size: 16),
+                child: const Icon(Icons.expand_more_rounded, size: 16),
               ),
               label: AnimatedText(showAll ? t.common.showLess : t.common.showMore),
             ),
@@ -55,12 +54,12 @@ class SideBarStatsOverview extends HookConsumerWidget {
               title: t.components.stats.traffic,
               stats: [
                 (
-                  label: const Icon(FluentIcons.arrow_download_16_regular),
+                  label: const Icon(Icons.vertical_align_bottom_rounded),
                   data: Text(stats.downlink.toInt().speed()),
                   semanticLabel: t.components.stats.speed,
                 ),
                 (
-                  label: const Icon(FluentIcons.arrow_bidirectional_up_down_16_regular),
+                  label: const Icon(Icons.swap_vert_rounded),
                   data: Text(stats.downlinkTotal.toInt().size()),
                   semanticLabel: t.components.stats.totalTransferred,
                 ),

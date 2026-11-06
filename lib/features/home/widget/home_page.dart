@@ -51,13 +51,13 @@ class HomePage extends HookConsumerWidget {
         actions: [
           // IconButton(
           //     onPressed: () => const QuickSettingsRoute().push(context),
-          //     icon: const Icon(FluentIcons.options_24_filled),
+          //     icon: const Icon(Icons.tune_rounded),
           //     material: (context, platform) => MaterialIconButtonData(
           //           tooltip: t.config.quickSettings,
           //         )),
           // IconButton(
           //     onPressed: () => const AddProfileRoute().push(context),
-          //     icon: const Icon(FluentIcons.add_circle_24_filled),
+          //     icon: const Icon(Icons.add_circle_rounded),
           //     material: (context, platform) => MaterialIconButtonData(
           //           tooltip: t.profile.add.buttonText,
           //         )),

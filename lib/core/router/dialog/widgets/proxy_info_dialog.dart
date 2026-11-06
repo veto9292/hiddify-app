@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -143,11 +142,11 @@ class OutboundInfoWidget extends ConsumerWidget {
     final ip = proxy.ipinfo;
     final server = proxy.host.isEmpty ? '' : (proxy.port == 0 ? proxy.host : '${proxy.host}:${proxy.port}');
     final rows = [
-      if (ip.ip.isNotEmpty) (FluentIcons.globe_24_regular, info.ip, ip.ip),
-      if (ip.countryCode.isNotEmpty) (FluentIcons.flag_24_regular, info.country, ip.countryCode),
-      if (ip.org.isNotEmpty) (FluentIcons.building_24_regular, info.organization, ip.org),
-      if (server.isNotEmpty) (FluentIcons.server_24_regular, info.server, server),
-      if (proxy.tag != proxy.tagDisplay) (FluentIcons.tag_24_regular, info.fullTag, proxy.tag),
+      if (ip.ip.isNotEmpty) (Icons.public_rounded, info.ip, ip.ip),
+      if (ip.countryCode.isNotEmpty) (Icons.flag_outlined, info.country, ip.countryCode),
+      if (ip.org.isNotEmpty) (Icons.business_outlined, info.organization, ip.org),
+      if (server.isNotEmpty) (Icons.dns_outlined, info.server, server),
+      if (proxy.tag != proxy.tagDisplay) (Icons.sell_outlined, info.fullTag, proxy.tag),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -206,7 +205,7 @@ class _FailureReason extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(FluentIcons.error_circle_24_regular, size: 18, color: s.onErrorContainer),
+                Icon(Icons.error_outline_rounded, size: 18, color: s.onErrorContainer),
                 const Gap(8),
                 Text(title, style: theme.textTheme.labelLarge?.copyWith(color: s.onErrorContainer)),
               ],
@@ -282,7 +281,7 @@ class _Speeds extends ConsumerWidget {
     Widget speed({required bool download}) {
       final value = (download ? proxy.downloadSpeed : proxy.uploadSpeed).toInt();
       return _SpeedTile(
-        icon: download ? FluentIcons.arrow_download_24_regular : FluentIcons.arrow_upload_24_regular,
+        icon: download ? Icons.vertical_align_bottom_rounded : Icons.vertical_align_top_rounded,
         label: download ? info.download : info.upload,
         value: value > 0 ? formatMbps(value) : null,
         unit: 'Mbps',
@@ -302,7 +301,7 @@ class _Speeds extends ConsumerWidget {
       children: [
         Expanded(
           child: _SpeedTile(
-            icon: FluentIcons.wifi_1_24_regular,
+            icon: Icons.wifi_rounded,
             label: info.ping,
             value: delay > 0 && delay < 65000 ? '$delay' : null,
             unit: 'ms',

@@ -1,14 +1,13 @@
 import 'package:country_flags/country_flags.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hiddify/core/haptic/haptic_service.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/utils/ip_utils.dart';
 import 'package:hiddify/gen/assets.gen.dart';
 import 'package:hiddify/gen/fonts.gen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import "package:simple_icons/simple_icons.dart";
 
 class IPText extends HookConsumerWidget {
   const IPText({required this.ip, required this.onLongPress, this.constrained = false, super.key});
@@ -115,7 +114,7 @@ class IPCountryFlag extends HookConsumerWidget {
       child: Padding(
         padding: padding,
         child: (countryCode?.isEmpty ?? true)
-            ? Icon(FluentIcons.question_circle_20_regular, size: size)
+            ? Icon(Icons.help_outline_rounded, size: size)
             : SizedBox(
                 width: size,
                 height: size,
@@ -162,22 +161,26 @@ Widget countryFlag(String countryCode, {double size = 48, ShapeBorder? shape = c
 }
 
 class OrgIconData {
-  final IconData icon;
+  /// The provider's logo, a one-color SVG from Simple Icons in the app's assets.
+  final String asset;
   final Color color;
 
-  const OrgIconData(this.icon, this.color);
+  const OrgIconData(this.asset, this.color);
 }
 
 // Map of organization keywords to icon and color
 const Map<String, OrgIconData> organizationData = {
-  "cloudflare": OrgIconData(SimpleIcons.cloudflare, SimpleIconColors.cloudflare),
-  "hetzner": OrgIconData(SimpleIcons.hetzner, SimpleIconColors.hetzner),
-  "ovh": OrgIconData(SimpleIcons.ovh, SimpleIconColors.ovh),
-  "fastly": OrgIconData(SimpleIcons.fastly, SimpleIconColors.fastly),
-  "digitalocean": OrgIconData(SimpleIcons.digitalocean, SimpleIconColors.digitalocean),
-  "alibaba": OrgIconData(SimpleIcons.alibabacloud, SimpleIconColors.alibabacloud),
-  "google": OrgIconData(SimpleIcons.googlecloud, SimpleIconColors.googlecloud),
-  "starlink": OrgIconData(SimpleIcons.satellite, SimpleIconColors.satellite),
+  "cloudflare": OrgIconData("assets/images/orgs/cloudflare.svg", Color(0xFFF38020)),
+  "azure": OrgIconData("assets/images/orgs/microsoftazure.svg", Color(0xFF0078D4)),
+  "amazon": OrgIconData("assets/images/orgs/amazonaws.svg", Color(0xFF232F3E)),
+  "oracle": OrgIconData("assets/images/orgs/oracle.svg", Color(0xFFF80000)),
+  "hetzner": OrgIconData("assets/images/orgs/hetzner.svg", Color(0xFFD50C2D)),
+  "ovh": OrgIconData("assets/images/orgs/ovh.svg", Color(0xFF123F6D)),
+  "fastly": OrgIconData("assets/images/orgs/fastly.svg", Color(0xFFFF282D)),
+  "digitalocean": OrgIconData("assets/images/orgs/digitalocean.svg", Color(0xFF0080FF)),
+  "alibaba": OrgIconData("assets/images/orgs/alibabacloud.svg", Color(0xFFFF6A00)),
+  "google": OrgIconData("assets/images/orgs/googlecloud.svg", Color(0xFF4285F4)),
+  "starlink": OrgIconData("assets/images/orgs/satellite.svg", Color(0xFF000000)),
 };
 
 class OrganisationFlag extends HookConsumerWidget {
@@ -213,7 +216,12 @@ class OrganisationFlag extends HookConsumerWidget {
     for (final entry in organizationData.entries) {
       if (organization.toLowerCase().contains(entry.key)) {
         return getFlagWidget(
-          widget: Icon(entry.value.icon, color: Colors.white, size: size - 6),
+          widget: SvgPicture.asset(
+            entry.value.asset,
+            width: size - 6,
+            height: size - 6,
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
           color: entry.value.color,
           organization: organization,
           size: size,

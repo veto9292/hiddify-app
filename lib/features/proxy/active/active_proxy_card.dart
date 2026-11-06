@@ -993,13 +993,13 @@ class _FinalIpSwapState extends ConsumerState<_FinalIpSwap> {
 //         child: Column(
 //           children: [
 //             _InfoProp(
-//               icon: FluentIcons.arrow_bidirectional_up_down_20_regular,
+//               icon: Icons.swap_vert_rounded,
 //               text: (stats?.downlinkTotal ?? 0).size(),
 //               semanticLabel: t.stats.totalTransferred,
 //             ),
 //             const Gap(8),
 //             _InfoProp(
-//               icon: FluentIcons.arrow_download_20_regular,
+//               icon: Icons.vertical_align_bottom_rounded,
 //               text: (stats?.downlink ?? 0).speed(),
 //               semanticLabel: t.stats.speed,
 //             ),

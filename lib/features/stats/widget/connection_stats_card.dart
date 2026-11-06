@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/widget/shimmer_skeleton.dart';
@@ -22,11 +21,11 @@ class ConnectionStatsCard extends HookConsumerWidget {
       stats: [
         switch (activeProxy) {
           AsyncData(value: final proxy) => (
-            label: const Icon(FluentIcons.arrow_routing_20_regular),
+            label: const Icon(Icons.alt_route_rounded),
             data: Text(proxy.tagDisplay),
             semanticLabel: null,
           ),
-          _ => (label: const Icon(FluentIcons.arrow_routing_20_regular), data: const Text("..."), semanticLabel: null),
+          _ => (label: const Icon(Icons.alt_route_rounded), data: const Text("..."), semanticLabel: null),
         },
         switch (activeProxy) {
           AsyncData(value: final proxy) when proxy.ipinfo.ip.isNotEmpty => (
@@ -47,7 +46,7 @@ class ConnectionStatsCard extends HookConsumerWidget {
             semanticLabel: null,
           ),
           _ => (
-            label: const Icon(FluentIcons.question_circle_20_regular),
+            label: const Icon(Icons.help_outline_rounded),
             data: const ShimmerSkeleton(widthFactor: .85, height: 14),
             semanticLabel: null,
           ),
@@ -74,12 +73,12 @@ class ConnectionStatsCard extends HookConsumerWidget {
         //       semanticLabel: null,
         //     ),
         //   AsyncLoading() => (
-        //       label: const Icon(FluentIcons.question_circle_20_regular),
+        //       label: const Icon(Icons.help_outline_rounded),
         //       data: const ShimmerSkeleton(widthFactor: .85, height: 14),
         //       semanticLabel: null,
         //     ),
         //   AsyncError(error: final UnknownIp _) => (
-        //       label: const Icon(FluentIcons.arrow_sync_20_regular),
+        //       label: const Icon(Icons.sync_rounded),
         //       data: UnknownIPText(
         //         text: t.proxies.checkIp,
         //         onTap: () async {
@@ -90,7 +89,7 @@ class ConnectionStatsCard extends HookConsumerWidget {
         //       semanticLabel: null,
         //     ),
         //   _ => (
-        //       label: const Icon(FluentIcons.error_circle_20_regular),
+        //       label: const Icon(Icons.error_outline_rounded),
         //       data: UnknownIPText(
         //         text: t.proxies.unknownIp,
         //         onTap: () async {

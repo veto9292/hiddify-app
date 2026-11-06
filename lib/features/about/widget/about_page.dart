@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -47,7 +46,7 @@ class AboutPage extends HookConsumerWidget {
           title: Text(t.pages.about.checkForUpdate),
           trailing: switch (appUpdate) {
             AppUpdateStateChecking() => const SizedBox(width: 24, height: 24, child: CircularProgressIndicator()),
-            _ => const Icon(FluentIcons.arrow_sync_24_regular),
+            _ => const Icon(Icons.sync_rounded),
           },
           onTap: () async {
             await ref.read(appUpdateNotifierProvider.notifier).check();
@@ -56,7 +55,7 @@ class AboutPage extends HookConsumerWidget {
       if (PlatformUtils.isDesktop)
         ListTile(
           title: Text(t.pages.about.openWorkingDir),
-          trailing: const Icon(FluentIcons.open_folder_24_regular),
+          trailing: const Icon(Icons.folder_open_rounded),
           onTap: () async {
             final path = ref.watch(appDirectoriesProvider).requireValue.workingDir.uri;
             await UriUtils.tryLaunch(path);
@@ -112,28 +111,28 @@ class AboutPage extends HookConsumerWidget {
               if (conditionalTiles.isNotEmpty) const Divider(),
               ListTile(
                 title: Text(t.pages.about.sourceCode),
-                trailing: const Icon(FluentIcons.open_24_regular),
+                trailing: const Icon(Icons.open_in_new_rounded),
                 onTap: () async {
                   await UriUtils.tryLaunch(Uri.parse(Constants.githubUrl));
                 },
               ),
               ListTile(
                 title: Text(t.pages.about.telegramChannel),
-                trailing: const Icon(FluentIcons.open_24_regular),
+                trailing: const Icon(Icons.open_in_new_rounded),
                 onTap: () async {
                   await UriUtils.tryLaunch(Uri.parse(Constants.telegramChannelUrl));
                 },
               ),
               ListTile(
                 title: Text(t.pages.about.termsAndConditions),
-                trailing: const Icon(FluentIcons.open_24_regular),
+                trailing: const Icon(Icons.open_in_new_rounded),
                 onTap: () async {
                   await UriUtils.tryLaunch(Uri.parse(Constants.termsAndConditionsUrl));
                 },
               ),
               ListTile(
                 title: Text(t.pages.about.privacyPolicy),
-                trailing: const Icon(FluentIcons.open_24_regular),
+                trailing: const Icon(Icons.open_in_new_rounded),
                 onTap: () async {
                   await UriUtils.tryLaunch(Uri.parse(Constants.privacyPolicyUrl));
                 },

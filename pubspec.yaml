@@ -73,7 +73,6 @@ dependencies:
   gap: ^3.0.1
   # percent_indicator_premium: ^0.0.2
   sliver_tools: ^0.2.12
-  font_awesome_flutter: ^11.0.0
   upgrader: ^11.3.0
   version: ^3.0.2
   qr_flutter: ^4.1.0
@@ -81,7 +80,6 @@ dependencies:
   dio_smart_retry: ^7.0.1
   cupertino_http: ^2.0.1
   dart_mappable: ^4.10.0
-  fluentui_system_icons: ^1.1.229
   json_path: ^0.7.1
   # permission_handler: ^11.3.0 # is not compatible with windows
   #flutter_easy_permission: ^1.1.2
@@ -99,7 +97,6 @@ dependencies:
   dynamic_color: ^1.8.1
   flutter_typeahead: ^5.0.1
   # flutter_platform_widgets: ^7.0.1
-  simple_icons: ^16.23.0
   basic_utils: ^5.7.0
   text_scroll: ^0.2.0
   flutter_markdown_plus: ^1.0.6
@@ -162,6 +159,8 @@ flutter:
     - assets/images/logo.svg
     # Iran's lion and sun flag, which country_flags doesn't have
     - assets/images/ir_shir.svg
+    # provider and support-link logos (Simple Icons SVGs; Azure, AWS, Oracle from its v10)
+    - assets/images/orgs/
     - assets/images/tray_icon.ico
     - assets/images/tray_icon.png
     - assets/images/tray_icon_dark.ico

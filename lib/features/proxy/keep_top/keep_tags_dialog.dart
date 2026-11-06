@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -513,7 +512,7 @@ class KeepTagsDialog extends HookConsumerWidget {
                               heroTag: 'keep-tags-ping',
                               onPressed: shownLive.isEmpty ? null : ping,
                               tooltip: t.pages.proxies.testDelay,
-                              child: const Icon(FluentIcons.flash_24_filled),
+                              child: const Icon(Icons.bolt_rounded),
                             ),
                           ],
                         ),
