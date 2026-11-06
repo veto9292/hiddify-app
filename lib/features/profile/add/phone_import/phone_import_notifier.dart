@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/features/profile/add/phone_import/phone_import_server.dart';
 import 'package:hiddify/hiddifycore/hiddify_core_service_provider.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'phone_import_notifier.g.dart';
