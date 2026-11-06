@@ -36,7 +36,6 @@ import 'package:hiddify/riverpod_observer.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart' show ProviderListenable;
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async {
   NativeSplash.preserve(widgetsBinding);
@@ -164,7 +163,7 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
   runApp(
     UncontrolledProviderScope(
       container: container,
-      child: NativeSplash.cover(SentryUserInteractionWidget(child: const App())),
+      child: NativeSplash.cover(const App()),
     ),
   );
 

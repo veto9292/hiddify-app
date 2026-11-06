@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:hiddify/utils/sentry_utils.dart';
 import 'package:logging/logging.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sentry/sentry.dart';
 
 // Adapted from https://github.com/getsentry/sentry-dart/tree/main/logging
 //
@@ -32,7 +32,7 @@ void logDisableSentry() {
   _sub = null;
 }
 
-/// Kept so SentryFlutter.init can register it as an integration, which is what
+/// Kept so Sentry.init can register it as an integration, which is what
 /// makes the SDK aware of us.
 class SentryLogIntegration implements Integration<SentryOptions> {
   @override
