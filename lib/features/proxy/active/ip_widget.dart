@@ -150,7 +150,13 @@ Widget countryFlag(String countryCode, {double size = 48, ShapeBorder? shape = c
   if (countryCode.toLowerCase() != "ir") return CircleFlag(countryCode, size: size, shape: shape);
   final flag = Assets.images.irShir.svg(width: size, height: size);
   if (shape == null) return flag;
-  return ClipPath(clipper: ShapeBorderClipper(shape: shape), clipBehavior: Clip.antiAlias, child: flag);
+  // the text direction resolves directional shapes, such as the routing page's BorderRadiusDirectional
+  return Builder(
+    builder: (context) => ClipPath(
+      clipper: ShapeBorderClipper(shape: shape, textDirection: Directionality.maybeOf(context)),
+      child: flag,
+    ),
+  );
 }
 
 class OrgIconData {
