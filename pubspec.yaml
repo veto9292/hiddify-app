@@ -176,6 +176,10 @@ flutter:
     - assets/images/world_map.png
     - assets/images/source/ic_launcher_border.png
 
+  shaders:
+    # the face of GlassSurface (lib/core/widget/glass_surface.dart)
+    - assets/shaders/glass_surface.frag
+
   fonts:
     - family: Shabnam
       fonts:
