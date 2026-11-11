@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hiddify/core/localization/translations.dart';
@@ -27,7 +28,14 @@ import 'package:hiddify/utils/custom_loggers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ActiveProxyFooter extends HookConsumerWidget with InfraLogger {
-  const ActiveProxyFooter({super.key});
+  const ActiveProxyFooter({super.key, this.speedInCorner = false, this.hideSpeedTest = false});
+
+  /// TEMP design option: no speed test on the card, for designs that show it elsewhere.
+  final bool hideSpeedTest;
+
+  /// TEMP design option: the speed test as a badge on the card's top-end corner instead
+  /// of in the proxy row.
+  final bool speedInCorner;
 
   /// Same window as ConnectionButton's held connected look: a brief Disconnected
   /// blip on resume must not collapse this footer or the connect button jumps.
@@ -79,32 +87,81 @@ class ActiveProxyFooter extends HookConsumerWidget with InfraLogger {
     if (card == null) {
       return const SizedBox.shrink();
     }
-    return Card(margin: const EdgeInsets.all(16), clipBehavior: Clip.antiAlias, child: _Steps(card));
+    final cardWidget = Card(
+      margin: const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
+      // with the speed test hidden, the row is as it is with the test in the corner: no capsule
+      child: _Steps(card, speedInCorner: speedInCorner || hideSpeedTest),
+    );
+    if (hideSpeedTest || !speedInCorner || card.serverStatus != StepStatus.connected) return cardWidget;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        cardWidget,
+        // on the card's top edge, clear of its rounded corner
+        PositionedDirectional(top: 16 - SpeedCapsule.height / 2, end: 32, child: _SpeedTest(card.server, inRow: false)),
+      ],
+    );
   }
+}
+
+/// How fast the proxy in use uploads and downloads; a tap measures both.
+class _SpeedTest extends ConsumerWidget {
+  const _SpeedTest(this.server, {this.inRow = true});
+  final OutboundInfo server;
+
+  /// In the proxy row it brings the row's chevron; on the card's corner it has none.
+  final bool inRow;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => SpeedCapsule(
+    upload: server.uploadSpeed.toInt(),
+    uploadTesting: server.uploadTesting,
+    uploadCached: server.uploadSpeedCached,
+    download: server.downloadSpeed.toInt(),
+    downloadTesting: server.downloadTesting,
+    downloadCached: server.downloadSpeedCached,
+    chevron: inRow,
+    onTest: () {
+      final active = ref.read(activeProxyNotifierProvider.notifier);
+      active.uploadTest();
+      active.downloadTest();
+    },
+  );
 }
 
 // ---------- the steps: one row each, in the order they connect, joined by a rail ----------
 
 /// One row's height, and the column its flag sits in; the flags are the rail's nodes.
-const _rowHeight = 76.0;
+/// TEMP design test: the main row's height, to try it shorter.
+double debugActiveProxyRowHeight = 76;
+double get _rowHeight => debugActiveProxyRowHeight;
 const _railWidth = 56.0;
 const _flagSize = 36.0;
 
-/// The hop row: one line, so shorter, with a smaller and squarer flag.
+/// The hop row: one line, so shorter, with a smaller flag.
 const _hopRowHeight = 44.0;
-const _hopFlagSize = 30.0;
-const _hopFlagRadius = 4.0;
+
+const _hopFlagSize = 28.0;
+
+/// The hop flag (and so its badge) against the main one.
+const _hopScale = _hopFlagSize / _flagSize;
+
+/// The gap after a row's last widget, the same in every row, so the hop's chip and the speed test
+/// line up at the end.
+const _endInset = 16.0;
 
 Color _green(BuildContext context) => Theme.of(context).extension<ConnectionButtonTheme>()!.connectedColor!;
 
 class _Steps extends StatelessWidget {
-  const _Steps(this.card);
+  const _Steps(this.card, {this.speedInCorner = false});
   final ActiveProxyCardData card;
+  final bool speedInCorner;
 
   @override
   Widget build(BuildContext context) {
     final hopStatus = card.hopStatus;
-    if (hopStatus == null) return _ProxyRow(card);
+    if (hopStatus == null) return _ProxyRow(card, speedInCorner: speedInCorner);
     // unblocker carries the server's traffic, extra security dials through the server
     final unblocker = card.chain.isUnblocker();
     // the rail stops this far from each flag, which draws 8 px smaller than its box
@@ -118,7 +175,9 @@ class _Steps extends StatelessWidget {
       children: [
         Column(
           mainAxisSize: MainAxisSize.min,
-          children: unblocker ? [_HopRow(card), _ProxyRow(card)] : [_ProxyRow(card), _HopRow(card)],
+          children: unblocker
+              ? [_HopRow(card), _ProxyRow(card, speedInCorner: speedInCorner)]
+              : [_ProxyRow(card, speedInCorner: speedInCorner), _HopRow(card)],
         ),
         PositionedDirectional(
           start: _railWidth / 2 - 1.5,
@@ -142,13 +201,17 @@ class _StepRow extends StatelessWidget {
     required this.status,
     required this.title,
     this.subtitle = const SizedBox.shrink(),
-    this.height = _rowHeight,
+    this.height,
     this.trailing,
     this.end,
     this.onLongPress,
+    this.afterCheck,
   });
 
-  final double height;
+  /// Takes the state badge's place once the step has connected and its check has gone.
+  final Widget? afterCheck;
+
+  final double? height;
   final Widget? trailing;
 
   /// Before the chevron of a row without [trailing]: the upload speed of the proxy in use.
@@ -169,7 +232,7 @@ class _StepRow extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: SizedBox(
-          height: height,
+          height: height ?? _rowHeight,
           child: Row(
             children: [
               SizedBox(
@@ -179,13 +242,17 @@ class _StepRow extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       flag,
+                      // the hop's smaller flag gets a badge smaller in proportion
                       if (trailing == null)
-                        PositionedDirectional(end: -3, top: -3, child: _StateBadge(status, ring: color))
+                        PositionedDirectional(end: -3, top: -3, child: StepStateBadge(status, after: afterCheck))
                       else
                         PositionedDirectional(
-                          end: -5,
-                          top: -5,
-                          child: Transform.scale(scale: .8, child: _StateBadge(status, ring: color)),
+                          end: -3 * _hopScale,
+                          top: -3 * _hopScale,
+                          child: SizedBox.square(
+                            dimension: FlagBadge.size * _hopScale,
+                            child: FittedBox(child: StepStateBadge(status, after: afterCheck)),
+                          ),
                         ),
                     ],
                   ),
@@ -203,12 +270,15 @@ class _StepRow extends StatelessWidget {
               if (trailing case final trailing?) ...[
                 const Gap(8),
                 trailing,
-                // room for the trailing widget's badge, clear of the card's rounded corner
-                const Gap(24),
+                const Gap(_endInset),
               ] else ...[
-                if (end case final end?) ...[const Gap(8), end, const Gap(4)],
-                Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                const Gap(12),
+                // the speed test brings the chevron itself, and takes its place once it has run
+                if (end case final end?) ...[
+                  const Gap(8),
+                  end,
+                ] else
+                  Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const Gap(_endInset),
               ],
             ],
           ),
@@ -257,10 +327,8 @@ class _Alternating extends HookWidget {
     }, const []);
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 400),
-      layoutBuilder: (current, previous) => Stack(
-        alignment: AlignmentDirectional.centerStart,
-        children: [...previous, ?current],
-      ),
+      layoutBuilder: (current, previous) =>
+          Stack(alignment: AlignmentDirectional.centerStart, children: [...previous, ?current]),
       child: KeyedSubtree(key: ValueKey(showFirst.value), child: showFirst.value ? first : second),
     );
   }
@@ -275,8 +343,9 @@ TextStyle? _nameStyle(BuildContext context, StepStatus status) => Theme.of(conte
 // ---------- the proxy row: how the server was picked, its name, IP and protocol ----------
 
 class _ProxyRow extends ConsumerWidget {
-  const _ProxyRow(this.card);
+  const _ProxyRow(this.card, {this.speedInCorner = false});
   final ActiveProxyCardData card;
+  final bool speedInCorner;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -295,20 +364,7 @@ class _ProxyRow extends ConsumerWidget {
     return _StepRow(
       color: theme.cardTheme.color ?? s.surfaceContainerLow,
       onTap: () => context.goNamed('proxies'),
-      // how fast the proxy in use uploads and downloads: a tap measures the upload, a long press the
-      // download
-      end: connected
-          ? UploadSpeedChip(
-              speed: server.uploadSpeed.toInt(),
-              testing: server.uploadTesting,
-              cached: server.uploadSpeedCached,
-              onTest: () => ref.read(activeProxyNotifierProvider.notifier).uploadTest(),
-              downloadSpeed: server.downloadSpeed.toInt(),
-              downloadTesting: server.downloadTesting,
-              downloadCached: server.downloadSpeedCached,
-              onDownloadTest: () => ref.read(activeProxyNotifierProvider.notifier).downloadTest(),
-            )
-          : null,
+      end: connected && !speedInCorner ? _SpeedTest(server) : null,
       flag: InkWell(
         onTap: () async {
           await urlTest();
@@ -319,8 +375,10 @@ class _ProxyRow extends ConsumerWidget {
           connected ? server : null,
           size: _flagSize,
           dim: status == StepStatus.waiting || status == StepStatus.failed,
+          showOrganization: false,
         ),
       ),
+      afterCheck: connected && server.hasIp ? LogoBadge.host(server.ipinfo.org) : null,
       status: status,
       title: Semantics(
         label: t.pages.proxies.activeProxy,
@@ -385,7 +443,10 @@ class _HopRow extends ConsumerWidget {
     final status = card.hopStatus!;
     final type = card.chain.isUnblocker() ? ChainType.unblocker : ChainType.extraSecurity;
     final (main, _) = type.colors(card.hopMode);
-    final color = Color.alphaBlend(main.withValues(alpha: .16), s.surfaceContainerHigh);
+    final light = theme.brightness == Brightness.light;
+    final color = Color.alphaBlend(main.withValues(alpha: light ? .20 : .16), s.surfaceContainerHigh);
+    // the chain's own color is too pale for text on its light band; a deeper shade of it reads
+    final ink = light ? Color.lerp(main, Colors.black, .45)! : main;
     final down = status == StepStatus.waiting || status == StepStatus.failed;
     final hop = card.hop;
     // the core still setting the hop up (or not listing it yet): its live state in place of the flag
@@ -409,11 +470,13 @@ class _HopRow extends ConsumerWidget {
         _ => _FlagSlot(
           status == StepStatus.connected ? card.hop : null,
           size: _hopFlagSize,
-          radius: _hopFlagRadius,
           dim: down,
+          showOrganization: false,
         ),
       },
       status: status,
+      // the hop's own mark (WARP, Psiphon, a profile) in the check's place once it connects
+      afterCheck: LogoBadge.hop(card.hopMode),
       title: switch (status) {
         StepStatus.waiting => const SizedBox.shrink(),
         // slow: the warning comes and goes, and in between the row says what the hop is doing
@@ -433,46 +496,26 @@ class _HopRow extends ConsumerWidget {
         ),
         _ => _IpSlot(status == StepStatus.connected ? hop : null, boneWidth: 64, isFinal: card.chain.isExtraSecurity()),
       },
-      trailing: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            height: _chipHeight,
-            padding: const EdgeInsetsDirectional.only(start: 6, end: 10),
-            decoration: BoxDecoration(
-              color: main.withValues(alpha: .18),
-              borderRadius: BorderRadius.circular(_chipHeight / 2),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox.square(
-                  dimension: _chipHeight - 10,
-                  child: FittedBox(
-                    child: ChainTypeIcon(type: type, mode: card.hopMode, animate: !down),
-                  ),
-                ),
-                const Gap(4),
-                Text(type.present(t), style: theme.textTheme.labelMedium?.copyWith(color: main, letterSpacing: .3)),
-              ],
-            ),
-          ),
-          // the mode, as a badge on the chip's top end
-          PositionedDirectional(
-            top: -5,
-            end: -5,
-            child: Container(
-              width: 18,
-              height: 18,
-              decoration: BoxDecoration(
-                color: s.surfaceContainerHighest,
-                shape: BoxShape.circle,
-                border: Border.all(color: color, width: 1.5),
+      trailing: Container(
+        height: _chipHeight,
+        padding: const EdgeInsetsDirectional.only(start: 6, end: 10),
+        decoration: BoxDecoration(
+          color: main.withValues(alpha: .18),
+          borderRadius: BorderRadius.circular(_chipHeight / 2),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox.square(
+              dimension: _chipHeight - 10,
+              child: FittedBox(
+                child: ChainTypeIcon(type: type, mode: card.hopMode, animate: !down),
               ),
-              child: Center(child: ChainModeIcon(mode: card.hopMode, size: 10)),
             ),
-          ),
-        ],
+            const Gap(4),
+            Text(type.present(t), style: theme.textTheme.labelMedium?.copyWith(color: ink, letterSpacing: .3)),
+          ],
+        ),
       ),
     );
   }
@@ -567,50 +610,168 @@ class _ClockPainter extends CustomPainter {
 
 // ---------- a step's state: a badge on its flag, and the rail to the next step ----------
 
-/// Waiting: an empty circle; connecting: a spinner; connected: a check; failed: an error icon.
-/// Ringed in the row's color, so it cuts cleanly into the flag.
-class _StateBadge extends StatelessWidget {
-  const _StateBadge(this.status, {required this.ring});
-  final StepStatus status;
-  final Color ring;
+/// A round mark on a flag's top-end corner: one filled disc, no ring, with a white mark in it. Every
+/// mark on the card uses it (the step's state, the host's logo, the hop's logo), so they all look
+/// alike: the same size, the same place, and nothing of the flag shows through.
+class FlagBadge extends StatelessWidget {
+  const FlagBadge({super.key, required this.color, required this.child});
 
-  static const size = 15.0;
+  final Color color;
+  final Widget child;
+
+  static const size = 18.0;
+
+  /// The white mark inside: about 60 % of the disc.
+  static const markSize = 11.0;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    child: SizedBox.square(
+      dimension: markSize,
+      child: Center(child: child),
+    ),
+  );
+}
+
+/// The step's state on its flag: waiting, connecting (a spinner), connected (a check), failed.
+class StepStateBadge extends StatelessWidget {
+  const StepStateBadge(this.status, {this.after});
+  final StepStatus status;
+
+  /// What takes the check's place once it has gone, such as the host's or the hop's logo.
+  final Widget? after;
+
+  /// How long the green check stays once a step connects, before it fades away.
+  static const _checkHold = Duration(milliseconds: 1500);
 
   @override
   Widget build(BuildContext context) {
     final s = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(1.5),
-      decoration: BoxDecoration(color: ring, shape: BoxShape.circle),
-      child: SizedBox.square(
-        dimension: size,
-        child: AnimatedSwitcher(
-          layoutBuilder: uniqueKeysLayout(),
-          duration: const Duration(milliseconds: 250),
-          child: switch (status) {
-            StepStatus.waiting => Container(
-              key: const ValueKey('waiting'),
-              margin: const EdgeInsets.all(size * 2 / 24),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: s.onSurface.withValues(alpha: .35), width: 1.5),
-              ),
+    final badge = AnimatedSwitcher(
+      layoutBuilder: uniqueKeysLayout(),
+      duration: const Duration(milliseconds: 250),
+      child: switch (status) {
+        StepStatus.waiting => FlagBadge(
+          key: const ValueKey('waiting'),
+          color: s.surfaceContainerHighest,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: s.onSurface.withValues(alpha: .35), width: 1.5),
             ),
-            StepStatus.connecting || StepStatus.slow => Padding(
-              key: const ValueKey('connecting'),
-              padding: const EdgeInsets.all(size * 2 / 24),
-              child: CircularProgressIndicator(strokeWidth: 2, backgroundColor: s.onSurface.withValues(alpha: .2)),
-            ),
-            StepStatus.connected => Icon(
-              Icons.check_circle_rounded,
-              key: const ValueKey('connected'),
-              size: size,
-              color: _green(context),
-            ).animate().scaleXY(begin: .4, end: 1, duration: 400.ms, curve: Curves.easeOutBack),
-            StepStatus.failed => Icon(Icons.error_rounded, key: const ValueKey('failed'), size: size, color: s.error),
-          },
+          ),
         ),
-      ),
+        StepStatus.connecting || StepStatus.slow => FlagBadge(
+          key: const ValueKey('connecting'),
+          color: s.surfaceContainerHighest,
+          child: CircularProgressIndicator(strokeWidth: 1.8, backgroundColor: s.onSurface.withValues(alpha: .15)),
+        ),
+        StepStatus.connected => FlagBadge(
+          key: const ValueKey('connected'),
+          color: _green(context),
+          // drawn, not the font's glyph, which sits off the disc's centre
+          child: const CustomPaint(size: Size.square(FlagBadge.markSize), painter: _CheckPainter()),
+        ).animate().scaleXY(begin: .4, end: 1, duration: 400.ms, curve: Curves.easeOutBack),
+        StepStatus.failed => FlagBadge(
+          key: const ValueKey('failed'),
+          color: s.error,
+          child: Icon(Icons.priority_high_rounded, size: FlagBadge.markSize, color: s.onError),
+        ),
+      },
+    );
+    // a connected step needs no mark: the check shrinks away after a moment, and [after], if any,
+    // pops up in its place
+    if (status != StepStatus.connected) return badge;
+    final gone = badge
+        .animate()
+        .fadeOut(delay: _checkHold, duration: 350.ms)
+        .scaleXY(begin: 1, end: .4, delay: _checkHold, duration: 350.ms, curve: Curves.easeIn);
+    final after = this.after;
+    if (after == null) return gone;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        gone,
+        after
+            .animate()
+            .fadeIn(delay: _checkHold + 250.ms, duration: 250.ms)
+            .scaleXY(begin: .4, end: 1, delay: _checkHold + 250.ms, duration: 400.ms, curve: Curves.easeOutBack),
+      ],
+    );
+  }
+}
+
+/// A white check whose bounding box is centred in the square it paints.
+class _CheckPainter extends CustomPainter {
+  const _CheckPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Offset at(double x, double y) => Offset(size.width * x, size.height * y);
+    canvas.drawPath(
+      Path()
+        ..moveTo(at(.18, .52).dx, at(.18, .52).dy)
+        ..lineTo(at(.40, .74).dx, at(.40, .74).dy)
+        ..lineTo(at(.82, .30).dx, at(.82, .30).dy),
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.9
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_CheckPainter old) => false;
+}
+
+/// A logo in the check's place: a [FlagBadge] in the brand's color with the logo in white, or a
+/// mode's icon in white on its color.
+class LogoBadge extends StatelessWidget {
+  const LogoBadge({this.logo, this.mode});
+  final OrgIconData? logo;
+  final ChainMode? mode;
+
+  /// The host provider's logo, or null if the app has none for [organization].
+  static LogoBadge? host(String organization) {
+    final org = organization.toLowerCase();
+    for (final entry in organizationData.entries) {
+      if (org.contains(entry.key)) return LogoBadge(logo: entry.value);
+    }
+    return null;
+  }
+
+  /// Psiphon's mark (its 2026 "P", from psiphon.ca), on the orange of its app icon.
+  static const _psiphon = OrgIconData('assets/images/orgs/psiphon.png', Color(0xFFF79A4A));
+
+  /// The hop's own mark: WARP is Cloudflare's, so its cloud; Psiphon its "P"; a profile its icon.
+  factory LogoBadge.hop(ChainMode mode) => switch (mode) {
+    ChainMode.warp => LogoBadge(logo: organizationData['cloudflare']),
+    ChainMode.psiphon => const LogoBadge(logo: _psiphon),
+    _ => LogoBadge(mode: mode),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final logo = this.logo;
+    if (logo == null) {
+      final mode = this.mode!;
+      return FlagBadge(
+        color: mode.color(),
+        child: Icon(mode.icon(), size: FlagBadge.markSize, color: Colors.white),
+      );
+    }
+    // the logos are one-color marks, drawn in white
+    return FlagBadge(
+      color: logo.color,
+      child: logo.asset.endsWith('.svg')
+          ? SvgPicture.asset(logo.asset, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn))
+          : Image.asset(logo.asset, color: Colors.white, colorBlendMode: BlendMode.srcIn),
     );
   }
 }
@@ -646,14 +807,29 @@ class _Rail extends HookWidget {
       }
       return null;
     }, [connected]);
+    // once connected, a spark of current runs up the wire every few seconds: data on its way
+    final spark = useAnimationController(duration: _RailPainter.sparkLoop);
+    useEffect(() {
+      if (connected) {
+        spark.repeat();
+      } else {
+        spark
+          ..stop()
+          ..value = 0;
+      }
+      return null;
+    }, [connected]);
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return CustomPaint(
       painter: _RailPainter(
         next: next,
         march: march,
         fill: fill,
+        spark: spark,
         track: s.onSurface.withValues(alpha: .15),
         dash: s.primary,
-        green: _green(context),
+        // emerald: livelier than the connect button's green, which stays as it is
+        green: dark ? const Color(0xFF34D399) : const Color(0xFF10B981),
         error: s.error.withValues(alpha: .5),
       ),
     );
@@ -665,15 +841,23 @@ class _RailPainter extends CustomPainter {
     required this.next,
     required this.march,
     required this.fill,
+    required this.spark,
     required this.track,
     required this.dash,
     required this.green,
     required this.error,
-  }) : super(repaint: Listenable.merge([march, fill]));
+  }) : super(repaint: Listenable.merge([march, fill, spark]));
 
   final StepStatus next;
   final Animation<double> march;
   final Animation<double> fill;
+  final Animation<double> spark;
+
+  /// One spark and the rest after it.
+  static const sparkLoop = Duration(milliseconds: 3200);
+
+  /// The share of [sparkLoop] the spark takes to run from the bottom to the top.
+  static const _run = .28;
   final Color track;
   final Color dash;
   final Color green;
@@ -703,6 +887,34 @@ class _RailPainter extends CustomPainter {
         break;
     }
     canvas.restore();
+    if (next == StepStatus.connected && fill.value == 1 && spark.value < _run) _paintSpark(canvas, size);
+  }
+
+  /// A bright head with a fading tail rising from the bottom flag to the top one, inside the wire
+  /// only: nothing spills round it.
+  void _paintSpark(Canvas canvas, Size size) {
+    final t = Curves.easeInOutCubic.transform(spark.value / _run);
+    final head = size.height * (1 - t);
+    const tail = 22.0;
+    // fade in at the bottom, out as it reaches the top
+    final strength = (math.min(t / .15, 1) * math.min((1 - t) / .25, 1)).clamp(0.0, 1.0);
+    final colors = [Colors.white, green, green.withValues(alpha: 0)];
+    final radius = Radius.circular(size.width / 2);
+    final core = Rect.fromLTWH(0, head, size.width, tail);
+    canvas
+      ..save()
+      ..clipRRect(RRect.fromRectAndRadius(Offset.zero & size, radius))
+      ..drawRect(
+        core,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [for (final c in colors) c.withValues(alpha: c.a * strength)],
+            stops: const [0, .25, 1],
+          ).createShader(core),
+      )
+      ..restore();
   }
 
   @override
@@ -801,12 +1013,16 @@ class _Bone extends StatelessWidget {
 /// with the next ping), a faint square while [dim] (its step waits or failed). On arrival it pops in
 /// and sends out a ring.
 class _FlagSlot extends StatelessWidget {
-  const _FlagSlot(this.info, {required this.size, this.dim = false, this.radius = 8});
+  const _FlagSlot(this.info, {required this.size, this.dim = false, this.showOrganization = true});
   final OutboundInfo? info;
   final double size;
   final bool dim;
 
-  final double radius;
+  /// False when the row draws the host provider's logo as its own badge.
+  final bool showOrganization;
+
+  /// The main flag's 8 px corner at 36 px, in proportion at other sizes.
+  double get radius => size * 8 / 36;
 
   @override
   Widget build(BuildContext context) {
@@ -825,26 +1041,18 @@ class _FlagSlot extends StatelessWidget {
               key: const ValueKey('flag'),
               alignment: Alignment.center,
               children: [
-                Container(
-                      width: inner,
-                      height: inner,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(radius),
-                        border: Border.all(color: _green(context), width: 2),
-                      ),
-                    )
-                    .animate()
-                    .scaleXY(begin: 1, end: 1.7, duration: 700.ms, curve: Curves.easeOut)
-                    .fadeOut(duration: 700.ms),
                 IPCountryFlag(
                       countryCode: info.ipinfo.countryCode,
-                      organization: info.ipinfo.org,
+                      organization: showOrganization ? info.ipinfo.org : null,
                       size: size,
-                      radius: radius,
                     )
+                    // it settles in from slightly smaller and blurred, then a soft light glides
+                    // across it once
                     .animate()
-                    .scaleXY(begin: .4, end: 1, duration: 500.ms, curve: Curves.easeOutBack)
-                    .fadeIn(duration: 200.ms),
+                    .fadeIn(duration: 300.ms)
+                    .scaleXY(begin: .85, end: 1, duration: 450.ms, curve: Curves.easeOutCubic)
+                    .blurXY(begin: 4, end: 0, duration: 350.ms)
+                    .shimmer(delay: 250.ms, duration: 900.ms, color: Colors.white.withValues(alpha: .55), angle: .6),
               ],
             ),
             _ when dim => Center(

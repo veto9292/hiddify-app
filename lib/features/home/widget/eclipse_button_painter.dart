@@ -112,8 +112,39 @@ class EclipseButtonPainter extends CustomPainter {
   static Rect errorBadgeRect(Offset center, double radius) =>
       Rect.fromCircle(center: center + Offset.fromDirection(math.pi / 4, radius * .74), radius: radius * .22);
 
+  /// TEMP design test: the face is glass drawn behind the painter, so the painter leaves it empty.
+  static bool glassFace = false;
+
+  /// TEMP design test: the button leaves its label out; the test draws it.
+  static bool hideLabel = false;
+
+  /// TEMP design test: the button shows no chain badge.
+  static bool hideBadge = false;
+
+  /// TEMP design test: the painter leaves the logo out; the test draws it in glass.
+  static bool hideLogo = false;
+
+  /// TEMP design test: which glass face look: 0 light frost, 1 milky, 2 dark clear, 3 tinted, 4 glow.
+  static int glassStyle = 0;
+
+  /// TEMP design test: draws what lies on the glass face, given the state's color.
+  static Widget Function(BuildContext context, Color color)? debugFace;
+
+  /// TEMP design test: the logo's color for the state's color, read where the button builds.
+  static Color Function(BuildContext context, Color color)? debugLogo;
+
+  /// TEMP design test: the button's clock, in seconds, so a recording runs at a steady speed.
+  static double Function()? debugNow;
+
   @override
   void paint(Canvas canvas, Size size) {
+    // the face clears what the light drew under it; clearing needs a layer of its own
+    if (glassFace) canvas.saveLayer(Offset.zero & size, Paint());
+    _paint(canvas, size);
+    if (glassFace) canvas.restore();
+  }
+
+  void _paint(Canvas canvas, Size size) {
     final f = frame;
     _Ctx ctx(EclipseFrame frame) => _Ctx(this, canvas, size.center(Offset.zero), frame);
     if (f.since >= _fade || f.previous == f.look) return _paintLook(ctx(f));
@@ -218,7 +249,7 @@ void _radar(_Ctx x) {
   }
   c.restore();
   // the logo keeps the button's white under it, so a faded bar doesn't show the radar through it
-  if (x.p.drawLogo) x.logoSpace((c) => c.drawPaint(Paint()..color = Colors.white));
+  if (x.p.drawLogo && !EclipseButtonPainter.glassFace) x.logoSpace((c) => c.drawPaint(Paint()..color = Colors.white));
 }
 
 /// The signal steps down to weak, then keeps searching, and the error badge breathes, sending out a
@@ -272,7 +303,8 @@ void _connected(_Ctx x) {
   _corona(x, color: upColor, level: up, reach: .95, rays: 52, seed: 40, plasma: true, additive: false, hollow: 1);
   _flares(x, color: upColor, level: up, seed: 80, reach: 1.05, additive: false);
 
-  x.ripple(s, x.col, duration: 1.4);
+  // TEMP design test: the glass look leaves out the ring that runs off the button on connect
+  if (!EclipseButtonPainter.glassFace) x.ripple(s, x.col, duration: 1.4);
   x.disc();
   x.bevel();
   // the thin bright edge where the light meets the button
@@ -565,6 +597,10 @@ class _Ctx {
 
   /// White disc, soft shadow and bevel (cached).
   void disc() {
+    if (EclipseButtonPainter.glassFace) {
+      c.drawCircle(center, r, Paint()..blendMode = BlendMode.clear);
+      return;
+    }
     final picture = _bodyFor(r, p.dark);
     c.save();
     c.translate(center.dx - r - _bodyPad, center.dy - r - _bodyPad);

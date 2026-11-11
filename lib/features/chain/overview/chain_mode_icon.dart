@@ -158,7 +158,8 @@ class PassingDoor extends StatelessWidget {
     if (!animate) {
       return CustomPaint(
         size: Size.square(size),
-        painter: _DoorPainter(t: null, color: color),
+        // off: the door half open with the traffic waiting in front of it, so it reads as a door
+        painter: _DoorPainter(t: _DoorPainter._waiting, color: color, open: .5),
       );
     }
     return Animate(
@@ -180,8 +181,14 @@ class PassingDoor extends StatelessWidget {
 /// The wall, its two leaves and the dots at [t] seconds into a run, on a 24 px grid; no dots and
 /// the door shut when [t] is null.
 class _DoorPainter extends CustomPainter {
-  _DoorPainter({required this.t, required this.color});
+  _DoorPainter({required this.t, required this.color, this.open});
   final double? t;
+
+  /// How open the door is drawn instead of where the run has it: 0 shut, 1 open.
+  final double? open;
+
+  /// The moment of a run shown while still: the dots have stopped in front of the door.
+  static const _waiting = 2.3;
   final Color color;
 
   /// The first dot hits the door, the door opens, the first dot goes, the door shuts.
@@ -190,7 +197,7 @@ class _DoorPainter extends CustomPainter {
   static const _goes = 2.9;
   static const _shuts = 5.55;
 
-  static const _wall = 1.8;
+  static const _wall = 2.3;
   static const _dot = 1.2;
   static const _top = 7.0;
   static const _bottom = 17.0;
@@ -257,7 +264,7 @@ class _DoorPainter extends CustomPainter {
     canvas.drawLine(const Offset(12, _bottom), const Offset(12, 22), stroke);
     // the two leaves turn on their hinges, from along the wall to along the way through
     final s = t;
-    final a = s == null ? 0.0 : _open(s) * pi / 2;
+    final a = (open ?? (s == null ? 0.0 : _open(s))) * pi / 2;
     const half = (_bottom - _top) / 2;
     for (final (hinge, sign) in [(const Offset(12, _top), 1.0), (const Offset(12, _bottom), -1.0)]) {
       canvas.drawLine(hinge, hinge + Offset(sin(a), sign * cos(a)) * half, stroke);
@@ -278,5 +285,5 @@ class _DoorPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_DoorPainter old) => old.t != t || old.color != color;
+  bool shouldRepaint(_DoorPainter old) => old.t != t || old.color != color || old.open != open;
 }

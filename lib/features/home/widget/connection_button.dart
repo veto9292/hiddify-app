@@ -11,6 +11,7 @@ import 'package:hiddify/core/router/dialog/dialog_notifier.dart';
 import 'package:hiddify/core/theme/theme_extensions.dart';
 import 'package:hiddify/core/widget/animated_text.dart';
 import 'package:hiddify/core/widget/frame_load.dart';
+import 'package:hiddify/core/widget/glass_surface.dart';
 import 'package:hiddify/core/widget/unique_keys_layout.dart';
 import 'package:hiddify/features/chain/model/chain_enum.dart';
 import 'package:hiddify/features/chain/overview/chain_mode_icon.dart';
@@ -86,6 +87,17 @@ class ConnectionButton extends HookConsumerWidget {
 
     const buttonTheme = ConnectionButtonTheme.light;
     final today = DateTime.now();
+    final raw = switch (look) {
+      _Look.connected when degraded => _degradedColor,
+      // the traffic waits for the chain hop: still on its way
+      _Look.connected when hopPending => const Color(0xFF455FE9),
+      _Look.connected => buttonTheme.connectedColor!,
+      _Look.noProxies => _degradedColor,
+      _Look.failed => Colors.red,
+      // the logo's own blue while the connection is on its way
+      _Look.connecting || _Look.waiting || _Look.hotReloading || _Look.disconnecting => const Color(0xFF455FE9),
+      _ => buttonTheme.idleColor!,
+    };
     return _ConnectionButton(
       look: look,
       onTap: onTap,
@@ -112,23 +124,16 @@ class ConnectionButton extends HookConsumerWidget {
       },
       hint: look == _Look.failed ? t.connection.tapToRetry : null,
       searching: hopPending,
+      degraded: degraded,
       // the chain hop, while the core runs with the chain on
-      hop: {_Look.connected, _Look.noProxies, _Look.waiting}.contains(look)
+      // TEMP design test: hideBadge leaves the chain badge out
+      hop: !EclipseButtonPainter.hideBadge && {_Look.connected, _Look.noProxies, _Look.waiting}.contains(look)
           ? ref.watch(activeProxyCardProvider.select((card) => card?.hopStatus == null ? null : card))
           : null,
       onHop: ref.read(bottomSheetsNotifierProvider.notifier).showConnectionHealth,
       hopLabel: health == null ? '' : '$chainName: ${_hopLabel(h, health)}',
-      buttonColor: switch (look) {
-        _Look.connected when degraded => _degradedColor,
-        // the traffic waits for the chain hop: still on its way
-        _Look.connected when hopPending => const Color(0xFF455FE9),
-        _Look.connected => buttonTheme.connectedColor!,
-        _Look.noProxies => const Color.fromARGB(255, 185, 176, 103),
-        _Look.failed => Colors.red,
-        // the logo's own blue while the connection is on its way
-        _Look.connecting || _Look.waiting || _Look.hotReloading || _Look.disconnecting => const Color(0xFF455FE9),
-        _ => buttonTheme.idleColor!,
-      },
+      buttonColor: EclipseButtonPainter.debugLogo?.call(context, raw) ?? _onGlass(raw),
+      faceColor: raw,
       image: switch (look) {
         _Look.connected || _Look.noProxies || _Look.hotReloading => Assets.images.connectNorouz,
         _ => Assets.images.disconnectNorouz,
@@ -176,7 +181,29 @@ class ConnectionButton extends HookConsumerWidget {
 
   static const _hold = Duration(milliseconds: 1500);
 
-  /// Connected, but the traffic does not get through: amber, between connected and failed.
+  /// TEMP design test: on the frosted glass face the logo is a little deeper and more saturated,
+  /// so it keeps the contrast it has on the white face.
+  static Color _onGlass(Color color) {
+    if (!EclipseButtonPainter.glassFace) return color;
+    final hsl = HSLColor.fromColor(color);
+    final saturated = hsl.withSaturation((hsl.saturation + .12).clamp(0.0, 1.0));
+    return switch (EclipseButtonPainter.glassStyle) {
+      // deeper, on light frost
+      0 => saturated.withLightness((hsl.lightness - .08).clamp(0.0, 1.0)).toColor(),
+      // as on the white face
+      1 => color,
+      // light, on dark glass
+      // every color as deep as the others: clear on dark glass without glowing
+      2 || 4 => hsl.withLightness(.72).toColor(),
+      // a mid tone, on whiter frost
+      5 => saturated.withLightness(.46).toColor(),
+      // white, on glass tinted the state's color
+      _ => Colors.white,
+    };
+  }
+
+  /// Connected, but the traffic does not get through: amber, between connected and failed. No
+  /// available proxies is the same.
   static const _degradedColor = Color(0xFFE3A63A);
 
   static String _hopLabel(Translations$connection$health$en h, ConnectionHealth health) => switch (health.hopState) {
@@ -211,10 +238,12 @@ class _ConnectionButton extends HookWidget {
     required this.label,
     required this.hint,
     required this.searching,
+    required this.degraded,
     required this.hop,
     required this.onHop,
     required this.hopLabel,
     required this.buttonColor,
+    required this.faceColor,
     required this.image,
     required this.useImage,
   });
@@ -235,6 +264,9 @@ class _ConnectionButton extends HookWidget {
   /// Connected, but the traffic still waits for the chain hop: the radar keeps searching.
   final bool searching;
 
+  /// Connected, but the selected proxy or the chain hop does not answer: no traffic gets through.
+  final bool degraded;
+
   /// The chain hop as a badge on the button; null with the chain off.
   final ActiveProxyCardData? hop;
 
@@ -244,6 +276,9 @@ class _ConnectionButton extends HookWidget {
   /// What the badge says to a screen reader and in its tooltip: the chain and its state.
   final String hopLabel;
   final Color buttonColor;
+
+  /// TEMP design test: the state's own color, for a glass face that takes it.
+  final Color faceColor;
   final AssetGenImage image;
   final bool useImage;
 
@@ -267,9 +302,12 @@ class _ConnectionButton extends HookWidget {
     _Look.connecting => EclipseLook.starting,
     _Look.disconnecting => EclipseLook.stopping,
     _Look.waiting || _Look.hotReloading => EclipseLook.waiting,
+    // the light round the button is the traffic: when none gets through, or the start failed, the
+    // button stays still in its color, with no light and no alarm
+    _Look.connected when degraded => EclipseLook.idle,
     _Look.connected when searching => EclipseLook.waiting,
-    _Look.connected || _Look.noProxies => EclipseLook.connected,
-    _Look.failed => EclipseLook.error,
+    _Look.connected => EclipseLook.connected,
+    _Look.noProxies || _Look.failed => EclipseLook.idle,
   };
 
   @override
@@ -278,7 +316,7 @@ class _ConnectionButton extends HookWidget {
     final still = MediaQuery.disableAnimationsOf(context);
     final scale = _scaleFor(MediaQuery.sizeOf(context).height);
     final clock = useMemoized(() => Stopwatch()..start());
-    double now() => clock.elapsedMicroseconds / 1e6;
+    double now() => EclipseButtonPainter.debugNow?.call() ?? clock.elapsedMicroseconds / 1e6;
     // keyboard / TV remote focus: a ring round the button, so the face and its logo stay visible
     final focused = useState(false);
 
@@ -380,6 +418,31 @@ class _ConnectionButton extends HookWidget {
                     fit: StackFit.expand,
                     clipBehavior: Clip.none,
                     children: [
+                      // TEMP design test: a glass face instead of the white one
+                      if (EclipseButtonPainter.glassFace)
+                        GlassSurface(
+                          borderRadius: _size / 2,
+                          // frosted toward white, so the logo reads as it does on the white face
+                          child:
+                              EclipseButtonPainter.debugFace?.call(context, faceColor) ??
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: switch (EclipseButtonPainter.glassStyle) {
+                                    0 => Colors.white.withValues(alpha: .42),
+                                    5 => Colors.white.withValues(alpha: .3),
+                                    1 => Colors.white.withValues(alpha: .78),
+                                    3 => faceColor.withValues(alpha: .5),
+                                    _ => null,
+                                  },
+                                  gradient: EclipseButtonPainter.glassStyle == 4
+                                      ? RadialGradient(
+                                          colors: [faceColor.withValues(alpha: .38), faceColor.withValues(alpha: 0)],
+                                        )
+                                      : null,
+                                ),
+                              ),
+                        ),
                       Positioned(
                         left: -_glow,
                         top: -_glow,
@@ -406,7 +469,7 @@ class _ConnectionButton extends HookWidget {
                                     radius: _size / 2,
                                     traffic: traffic.value,
                                     dark: theme.brightness == Brightness.dark,
-                                    drawLogo: !useImage,
+                                    drawLogo: !useImage && !EclipseButtonPainter.hideLogo,
                                     logoOpacity: look == _Look.loading ? .38 : 1,
                                   ),
                                 );
@@ -449,7 +512,7 @@ class _ConnectionButton extends HookWidget {
                         ),
                       ),
                       // the error badge opens what went wrong
-                      if (look == _Look.failed && onErrorDetails != null)
+                      if (_eclipseLook == EclipseLook.error && onErrorDetails != null)
                         Positioned.fromRect(
                           rect: EclipseButtonPainter.errorBadgeRect(
                             const Offset(_size / 2, _size / 2),
@@ -478,23 +541,26 @@ class _ConnectionButton extends HookWidget {
             ),
           ),
         ),
-        Gap(24 * scale),
-        Column(
-          children: [
-            AnimatedText(label, style: theme.textTheme.titleMedium),
-            AnimatedSwitcher(
-              layoutBuilder: uniqueKeysLayout(),
-              duration: const Duration(milliseconds: 250),
-              child: hint == null
-                  ? const SizedBox.shrink()
-                  : Text(
-                      hint!,
-                      key: ValueKey(hint),
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                    ),
-            ),
-          ],
-        ),
+        // TEMP design test: the label is drawn elsewhere
+        if (!EclipseButtonPainter.hideLabel) ...[
+          Gap(24 * scale),
+          Column(
+            children: [
+              AnimatedText(label, style: theme.textTheme.titleMedium),
+              AnimatedSwitcher(
+                layoutBuilder: uniqueKeysLayout(),
+                duration: const Duration(milliseconds: 250),
+                child: hint == null
+                    ? const SizedBox.shrink()
+                    : Text(
+                        hint!,
+                        key: ValueKey(hint),
+                        style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
