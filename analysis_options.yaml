@@ -15,6 +15,12 @@ analyzer:
     - "third_party/**"
     - "build/**"
     - "dist/**"
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
   errors:
     invalid_annotation_target: ignore
 
