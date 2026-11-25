@@ -6,7 +6,6 @@ import 'package:hiddify/features/app_based_routing/model/per_app_proxy_mode.dart
 import 'package:hiddify/features/profile/model/profile_entity.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
-import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 /// What could still be read from a database that can not be opened, to add back once it was wiped.
 class DbSalvage {
@@ -27,7 +26,6 @@ Future<DbSalvage> salvageDb(File file, {Directory? configsDir}) async {
   final profiles = <ProfileEntriesCompanion>[];
   final appProxies = <AppProxyEntriesCompanion>[];
   if (await file.exists()) {
-    if (Platform.isAndroid) await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
     Database? raw;
     try {
       raw = sqlite3.open(file.path, mode: OpenMode.readOnly);
@@ -36,7 +34,7 @@ Future<DbSalvage> salvageDb(File file, {Directory? configsDir}) async {
     } catch (_) {
       // not a database any more: only the configs on disk are left
     } finally {
-      raw?.dispose();
+      raw?.close();
     }
   }
 

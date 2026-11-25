@@ -37,7 +37,7 @@ void main() {
           ('', 'local', 0, 'no id', NULL, 1700000000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
         PRAGMA user_version = 4;
       ''')
-      ..dispose();
+      ..close();
     File('${configs.path}/r1.json').writeAsStringSync('{}');
     File('${configs.path}/l1.json').writeAsStringSync('{}');
 
