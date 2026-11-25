@@ -114,7 +114,7 @@ class CoreInterfaceMacOS extends CoreInterfaceDesktop {
   @override
   void onCoreProcessExited(String message) {
     if (_usingVPN || _status.isClosed) return;
-    if (_status.valueOrNull is CoreStopped) return;
+    if (_status.value is CoreStopped) return;
     _status.add(CoreStatus.stopped(alert: CoreAlert.startFailed, message: message));
   }
 

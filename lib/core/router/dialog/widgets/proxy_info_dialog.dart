@@ -34,7 +34,7 @@ class _KeepLoaded extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsProvider).requireValue;
-    final profile = ref.watch(activeProfileProvider).valueOrNull;
+    final profile = ref.watch(activeProfileProvider).value;
     final busy = useState(false);
     if (profile == null || !profile.keepsTop) return const SizedBox.shrink();
     final info = t.dialogs.proxyInfo;
@@ -77,7 +77,7 @@ class _PsiphonCountry extends ConsumerWidget {
     if (mode != ChainMode.psiphon) return const SizedBox.shrink();
     final isHop = ref.watch(
       mainOutboundsNotifierProvider.select((list) {
-        final main = list.valueOrNull;
+        final main = list.value;
         return main != null && main.hasChainHop() && main.chainHop.tag == proxy.tag;
       }),
     );

@@ -155,7 +155,7 @@ class App extends HookConsumerWidget with WidgetsBindingObserver, PresLogger {
       return null;
     }, [decorate]);
     ref.listen(connectionNotifierProvider, (previous, next) {
-      if (previous?.valueOrNull != next.valueOrNull) wakeAmbientMotion();
+      if (previous?.value != next.value) wakeAmbientMotion();
     });
     return TickerMode(
       enabled: animate,

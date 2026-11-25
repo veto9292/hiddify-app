@@ -140,7 +140,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
           loggy.info("startup connect: user stopped it, not retrying");
           return;
         }
-        if (state.valueOrNull case final value? when value is! Disconnected) {
+        if (state.value case final value? when value is! Disconnected) {
           loggy.info("startup connect: status is ${value.runtimeType}, not retrying");
           return;
         }

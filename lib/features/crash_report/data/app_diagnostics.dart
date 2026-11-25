@@ -75,7 +75,7 @@ Map<String, Object?> _system(Ref ref) => {
 Map<String, Object?> _connection(Ref ref) {
   final status = ref.read(connectionNotifierProvider);
   return {
-    'status': status.valueOrNull?.toString() ?? (status.hasError ? 'error: ${status.error}' : 'loading'),
+    'status': status.value?.toString() ?? (status.hasError ? 'error: ${status.error}' : 'loading'),
     'singleChannelCore': ref.read(hiddifyCoreServiceProvider).core.isSingleChannel(),
   };
 }

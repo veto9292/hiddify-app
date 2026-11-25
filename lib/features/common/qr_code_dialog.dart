@@ -201,7 +201,7 @@ class ShareProfileDialog extends HookConsumerWidget {
                           child: Icon(Icons.copy_rounded, size: 20, color: s.onSurfaceVariant),
                         ),
                       ),
-                      if (_canSendToTv && ref.watch(isAndroidTvProvider).valueOrNull == false) ...[
+                      if (_canSendToTv && ref.watch(isAndroidTvProvider).value == false) ...[
                         const Gap(8),
                         _SendToTv(link),
                       ],

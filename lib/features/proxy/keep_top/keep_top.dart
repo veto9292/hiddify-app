@@ -181,7 +181,7 @@ class KeepTopNotifier extends _$KeepTopNotifier with AppLogger {
   Future<List<(String, int)>> countries(ProfileEntity profile) async {
     final proxies = await readProfileProxies(ref.read(profilePathResolverProvider).file(profile.id));
     final live = {
-      for (final e in ref.read(proxiesOverviewNotifierProvider).valueOrNull?.items ?? const <OutboundInfo>[]) e.tag: e,
+      for (final e in ref.read(proxiesOverviewNotifierProvider).value?.items ?? const <OutboundInfo>[]) e.tag: e,
     };
     final counts = <String, int>{};
     for (final proxy in proxies) {

@@ -83,7 +83,7 @@ class ProxyTile extends HookConsumerWidget with PresLogger {
     // the user asked to keep this proxy loaded whatever its ping: the flag wears a pin
     final pinned = ref.watch(
       activeProfileProvider.select((profile) {
-        final p = profile.valueOrNull;
+        final p = profile.value;
         return p != null && p.keepsTop && p.keepTopPinned.contains(proxy.tag);
       }),
     );

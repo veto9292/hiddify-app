@@ -42,7 +42,7 @@ class DeepSearchPrompt extends _$DeepSearchPrompt with AppLogger {
       if (previous != next) _asked.clear();
     });
     ref.listen(mainOutboundsNotifierProvider, (_, next) {
-      final list = next.valueOrNull;
+      final list = next.value;
       if (list == null || !ref.read(serviceRunningProvider)) return;
       final candidate = deepSearchCandidate(list, ref.read(ConfigOptions.chainStatus));
       if (candidate != null) _offer(candidate);

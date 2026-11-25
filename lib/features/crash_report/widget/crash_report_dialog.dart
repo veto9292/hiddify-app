@@ -328,7 +328,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
   }
 
   Widget _tracePage(Translations t, DateTime? until) {
-    final status = ref.watch(connectionNotifierProvider).valueOrNull;
+    final status = ref.watch(connectionNotifierProvider).value;
     return TraceSessionView(
       t: t,
       until: until,
@@ -722,7 +722,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
   Uri _githubIssue() => githubIssueUrl(
     description: _description.text,
     crash: widget.crash,
-    version: switch (ref.read(appInfoProvider).valueOrNull) {
+    version: switch (ref.read(appInfoProvider).value) {
       final info? => '${info.version} (${info.buildNumber}) ${info.release.key}',
       null => null,
     },

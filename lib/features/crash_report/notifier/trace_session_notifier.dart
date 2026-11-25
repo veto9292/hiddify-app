@@ -86,7 +86,7 @@ class TraceSessionNotifier extends Notifier<DateTime?> {
     state = null;
     _log.info('trace logging off, back to ${before.name}');
     if (notify && wasActive) {
-      final t = ref.read(translationsProvider).valueOrNull;
+      final t = ref.read(translationsProvider).value;
       if (t != null) ref.read(inAppNotificationControllerProvider).showInfoToast(t.dialogs.crashReport.trace.ended);
     }
   }
