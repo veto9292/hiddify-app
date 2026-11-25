@@ -186,12 +186,12 @@ class AmbientMotionBuilder extends StatelessWidget {
   final WidgetBuilder still;
 
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder<bool>(
-    valueListenable: TickerMode.getNotifier(context),
-    builder: (context, visible, _) => ValueListenableBuilder<bool>(
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: TickerMode.getValuesNotifier(context),
+    builder: (context, ticker, _) => ValueListenableBuilder<bool>(
       valueListenable: ambientMotion,
       builder: (context, ambient, _) =>
-          visible && ambient && !MediaQuery.disableAnimationsOf(context) ? moving(context) : still(context),
+          ticker.enabled && ambient && !MediaQuery.disableAnimationsOf(context) ? moving(context) : still(context),
     ),
   );
 }
