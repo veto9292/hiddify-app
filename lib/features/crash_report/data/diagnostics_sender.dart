@@ -7,7 +7,7 @@ import 'package:hiddify/core/model/environment.dart';
 import 'package:hiddify/features/crash_report/data/diagnostics_exporter.dart';
 import 'package:hiddify/utils/custom_loggers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sentry/sentry.dart';
 
 final _log = appLogger('DiagnosticsSender');
 
