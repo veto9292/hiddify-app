@@ -361,7 +361,7 @@ class _Light {
     required int raySeed,
     required this.seed,
   }) : _angle = Float64List.fromList([for (var i = 0; i < rays; i++) 2 * math.pi * _hash(i, raySeed)]),
-       _turn = Float64List.fromList([for (var i = 0; i < rays; i++) _hash(i, raySeed + 1) > .5 ? 1 : -1]),
+       _turn = Float64List.fromList([for (var i = 0; i < rays; i++) if (_hash(i, raySeed + 1) > .5) 1 else -1]),
        _length = Float64List.fromList([for (var i = 0; i < rays; i++) .45 + .55 * _hash(i, raySeed + 2)]),
        _flarePhase = Float64List.fromList([for (var k = 0; k < _flares; k++) _hash(k, seed)]),
        _sparkSpeed = Float64List.fromList([for (var i = 0; i < _sparks; i++) .18 + .1 * _hash(i, seed + 4)]),

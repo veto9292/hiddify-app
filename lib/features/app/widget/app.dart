@@ -177,7 +177,7 @@ class App extends HookConsumerWidget with WidgetsBindingObserver, PresLogger {
                   title: Constants.appName,
                   builder: (context, child) {
                     final theme = Theme.of(context);
-                    child = SnackBarHost(
+                    final content = SnackBarHost(
                       child: upgrader == null
                           ? child ?? const SizedBox()
                           : UpgradeAlert(
@@ -187,7 +187,7 @@ class App extends HookConsumerWidget with WidgetsBindingObserver, PresLogger {
                             ),
                     );
                     if (kDebugMode && _debugAccessibility) {
-                      return AccessibilityTools(checkFontOverflows: true, child: child);
+                      return AccessibilityTools(checkFontOverflows: true, child: content);
                     }
                     return AnnotatedRegion<SystemUiOverlayStyle>(
                       // The page draws behind the bars, but with 3-button navigation, and with
@@ -203,7 +203,7 @@ class App extends HookConsumerWidget with WidgetsBindingObserver, PresLogger {
                             ? Brightness.light
                             : Brightness.dark,
                       ),
-                      child: child,
+                      child: content,
                     );
                   },
                 );
