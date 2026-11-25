@@ -120,7 +120,7 @@ class AboutPage extends HookConsumerWidget {
               ListTile(
                 title: Text(t.pages.about.reportProblem),
                 subtitle: Text(t.pages.about.reportProblemMsg),
-                trailing: const Icon(FluentIcons.chat_warning_24_regular),
+                trailing: const Icon(Icons.feedback_outlined),
                 onTap: () async {
                   await ref.read(dialogNotifierProvider.notifier).showReportProblem();
                 },

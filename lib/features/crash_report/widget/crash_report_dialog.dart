@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hiddify/core/app_info/app_info_provider.dart';
@@ -80,7 +79,7 @@ class ReportProblemDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsProvider).requireValue;
     return _ReportDialog(
-      icon: FluentIcons.chat_warning_24_regular,
+      icon: Icons.feedback_outlined,
       title: t.dialogs.crashReport.problemTitle,
       msg: t.dialogs.crashReport.problemMsg,
       dismiss: t.common.cancel,
@@ -305,7 +304,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
                     ),
                     FilledButton.icon(
                       onPressed: () => ref.read(traceSessionProvider.notifier).start(),
-                      icon: const Icon(FluentIcons.record_20_filled, size: 18),
+                      icon: const Icon(Icons.fiber_manual_record_rounded, size: 18),
                       label: Text(t.dialogs.crashReport.trace.start),
                     ),
                   ]
@@ -394,12 +393,12 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
           // a report on its way to Hiddify stays there
           onChanged: uploading ? null : (channel) => setState(() => _channel = channel),
           options: [
-            (channel: ReportChannel.telegram, icon: FluentIcons.send_24_regular, label: 'Telegram'),
+            (channel: ReportChannel.telegram, icon: Icons.send_rounded, label: 'Telegram'),
             if (DiagnosticsSender.available)
-              (channel: ReportChannel.hiddify, icon: FluentIcons.cloud_arrow_up_24_regular, label: 'Hiddify'),
-            (channel: ReportChannel.email, icon: FluentIcons.mail_24_regular, label: r.email),
-            (channel: ReportChannel.github, icon: FluentIcons.code_24_regular, label: 'GitHub'),
-            (channel: ReportChannel.local, icon: FluentIcons.phone_laptop_24_regular, label: r.localOnly),
+              (channel: ReportChannel.hiddify, icon: Icons.cloud_upload_outlined, label: 'Hiddify'),
+            (channel: ReportChannel.email, icon: Icons.mail_outline_rounded, label: r.email),
+            (channel: ReportChannel.github, icon: Icons.code_rounded, label: 'GitHub'),
+            (channel: ReportChannel.local, icon: Icons.devices_rounded, label: r.localOnly),
           ],
         ),
         const SizedBox(height: 16),
@@ -443,7 +442,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         ? CircleAvatar(
             radius: 22,
             backgroundColor: colors.errorContainer,
-            child: Icon(FluentIcons.error_circle_24_regular, color: colors.onErrorContainer),
+            child: Icon(Icons.error_outline_rounded, color: colors.onErrorContainer),
           )
         : report == null
         ? SizedBox.square(
@@ -456,7 +455,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         : CircleAvatar(
             radius: 22,
             backgroundColor: colors.primary,
-            child: Icon(FluentIcons.folder_zip_24_regular, color: colors.onPrimary),
+            child: Icon(Icons.folder_zip_outlined, color: colors.onPrimary),
           );
 
     return AnimatedContainer(
@@ -526,10 +525,10 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
     final r = t.dialogs.crashReport;
     final s = r.steps;
     return switch (_channel) {
-      ReportChannel.telegram => _Hint(icon: FluentIcons.lock_closed_16_regular, text: s.telegramPrivate),
-      ReportChannel.hiddify => _Hint(icon: FluentIcons.lock_closed_16_regular, text: r.sendHiddifyMsg),
-      ReportChannel.email => _Hint(icon: FluentIcons.lock_closed_16_regular, text: s.emailPrivate),
-      ReportChannel.local => _Hint(icon: FluentIcons.shield_checkmark_16_regular, text: r.localOnlyMsg),
+      ReportChannel.telegram => _Hint(icon: Icons.lock_outline_rounded, text: s.telegramPrivate),
+      ReportChannel.hiddify => _Hint(icon: Icons.lock_outline_rounded, text: r.sendHiddifyMsg),
+      ReportChannel.email => _Hint(icon: Icons.lock_outline_rounded, text: s.emailPrivate),
+      ReportChannel.local => _Hint(icon: Icons.verified_user_outlined, text: r.localOnlyMsg),
       ReportChannel.github => null,
     };
   }
@@ -554,17 +553,17 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         (
           label: desktop ? t.common.save : t.common.share,
           icon: encrypted
-              ? FluentIcons.lock_closed_20_regular
+              ? Icons.lock_outline_rounded
               : desktop
-              ? FluentIcons.arrow_download_20_regular
-              : FluentIcons.share_20_regular,
+              ? Icons.vertical_align_bottom_rounded
+              : Icons.share_rounded,
           primary: report != null && !_saved,
           run: report == null ? null : () => _save(t),
         ),
         if (encrypted)
           (
             label: s.saveUnencryptedCopy,
-            icon: FluentIcons.lock_open_20_regular,
+            icon: Icons.lock_open_rounded,
             primary: false,
             run: () => _saveUnencrypted(t),
           ),
@@ -590,7 +589,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
               duration: const Duration(milliseconds: 450),
               curve: Curves.elasticOut,
               builder: (_, scale, child) => Transform.scale(scale: scale, child: child),
-              child: Icon(FluentIcons.checkmark_circle_48_filled, size: 48, color: colors.primary),
+              child: Icon(Icons.check_circle_rounded, size: 48, color: colors.primary),
             ),
             const SizedBox(height: 8),
             Text(
@@ -609,7 +608,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
       children: [
         if (_upload == _Upload.failed) ...[
           const SizedBox(height: 4),
-          _Notice(icon: FluentIcons.warning_16_regular, text: r.sendFailed, warning: true),
+          _Notice(icon: Icons.warning_amber_rounded, text: r.sendFailed, warning: true),
         ],
         const SizedBox(height: 12),
         FilledButton.icon(
@@ -620,7 +619,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
           onPressed: _report == null || uploading ? null : _uploadToHiddify,
           icon: uploading
               ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-              : const Icon(FluentIcons.cloud_arrow_up_24_regular, size: 20),
+              : const Icon(Icons.cloud_upload_outlined, size: 20),
           label: Text(uploading ? r.steps.uploading : r.sendHiddify),
         ),
       ],
@@ -641,7 +640,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         s.openBot,
         _ltr(Constants.bugReportTelegramName),
         s.openBotButton,
-        FluentIcons.send_20_regular,
+        Icons.send_rounded,
         s.attachInChat,
         s.attachHow,
       ),
@@ -649,7 +648,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         s.openMail,
         s.openMailMsg(address: _ltr(Constants.bugReportEmail)),
         s.openMailButton,
-        FluentIcons.mail_20_regular,
+        Icons.mail_outline_rounded,
         s.attachSend,
         s.attachHow,
       ),
@@ -657,7 +656,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         s.openGithub,
         s.openGithubMsg,
         s.openGithubButton,
-        FluentIcons.open_20_regular,
+        Icons.open_in_new_rounded,
         s.dropInIssue,
         s.dropInIssueHow,
       ),
@@ -678,7 +677,7 @@ class _ReportDialogState extends ConsumerState<_ReportDialog> {
         actions: [
           (
             label: desktop ? t.common.save : t.common.share,
-            icon: desktop ? FluentIcons.arrow_download_20_regular : FluentIcons.share_20_regular,
+            icon: desktop ? Icons.vertical_align_bottom_rounded : Icons.share_rounded,
             primary: ready && !_saved,
             run: ready ? () => _save(t) : null,
           ),
@@ -1010,7 +1009,7 @@ class _ScrubStep extends StatelessWidget {
     final colors = theme.colorScheme;
     final Widget mark = switch (state) {
       _StepState.done => Icon(
-        FluentIcons.checkmark_circle_16_filled,
+        Icons.check_circle_rounded,
         key: const ValueKey('done'),
         size: 16,
         color: colors.tertiary,
@@ -1024,12 +1023,12 @@ class _ScrubStep extends StatelessWidget {
         ),
       ),
       _StepState.failed => Icon(
-        FluentIcons.warning_16_filled,
+        Icons.warning_rounded,
         key: const ValueKey('warning'),
         size: 16,
         color: _warning(theme),
       ),
-      _ => Icon(FluentIcons.circle_16_regular, key: const ValueKey('waiting'), size: 16, color: colors.outline),
+      _ => Icon(Icons.circle_outlined, key: const ValueKey('waiting'), size: 16, color: colors.outline),
     };
     return AnimatedOpacity(
       duration: _motion,
@@ -1261,7 +1260,7 @@ class _FileChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(FluentIcons.folder_zip_16_regular, size: 14, color: colors.onSurfaceVariant),
+          Icon(Icons.folder_zip_outlined, size: 14, color: colors.onSurfaceVariant),
           const SizedBox(width: 5),
           Flexible(
             child: Text(

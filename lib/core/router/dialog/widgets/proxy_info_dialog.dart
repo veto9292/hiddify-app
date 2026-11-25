@@ -421,7 +421,7 @@ class _FailureReason extends ConsumerWidget {
                   visualDensity: VisualDensity.compact,
                   iconSize: 18,
                   color: s.onErrorContainer,
-                  icon: const Icon(FluentIcons.copy_24_regular),
+                  icon: const Icon(Icons.copy_rounded),
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: reason));
                     ref

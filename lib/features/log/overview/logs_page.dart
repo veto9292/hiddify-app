@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hiddify/core/localization/translations.dart';
@@ -146,7 +145,7 @@ class _LogsPageState extends ConsumerState<LogsPage> with PresLogger {
             // one tap to the developers: these logs with everything else that explains them
             action: FilledButton.tonalIcon(
               onPressed: () => ref.read(dialogNotifierProvider.notifier).showReportProblem(),
-              icon: const Icon(FluentIcons.chat_warning_20_regular, size: 16),
+              icon: const Icon(Icons.report_problem_rounded, size: 16),
               label: Text(t.pages.logs.fullReport),
               style: FilledButton.styleFrom(
                 visualDensity: VisualDensity.compact,

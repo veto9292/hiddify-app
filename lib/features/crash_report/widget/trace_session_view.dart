@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/features/crash_report/notifier/trace_session_notifier.dart';
@@ -73,7 +72,7 @@ class TraceSessionView extends StatelessWidget {
                     children: [
                       _Glow(
                         color: colors.primary,
-                        child: Icon(FluentIcons.search_sparkle_24_filled, color: colors.onPrimary, size: 26),
+                        child: Icon(Icons.troubleshoot_rounded, color: colors.onPrimary, size: 26),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -116,7 +115,7 @@ class TraceSessionView extends StatelessWidget {
           action: on && disconnected
               ? FilledButton.tonalIcon(
                   onPressed: onConnect,
-                  icon: const Icon(FluentIcons.plug_connected_20_regular, size: 18),
+                  icon: const Icon(Icons.power_rounded, size: 18),
                   label: Text(s.connect),
                 )
               : null,
@@ -126,7 +125,7 @@ class TraceSessionView extends StatelessWidget {
           const SizedBox(height: 6),
           Row(
             children: [
-              Icon(FluentIcons.shield_checkmark_16_regular, size: 16, color: colors.onSurfaceVariant),
+              Icon(Icons.verified_user_outlined, size: 16, color: colors.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -186,7 +185,7 @@ class TraceSessionBanner extends StatelessWidget {
           ),
           TextButton.icon(
             onPressed: onStop,
-            icon: const Icon(FluentIcons.stop_16_filled, size: 16),
+            icon: const Icon(Icons.stop_rounded, size: 16),
             label: Text(s.stop),
           ),
         ],
