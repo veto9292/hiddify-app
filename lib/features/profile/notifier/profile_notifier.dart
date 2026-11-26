@@ -60,8 +60,11 @@ class AddProfileNotifier extends _$AddProfileNotifier with AppLogger {
       _cancelToken?.cancel();
     });
     listenSelf((previous, next) {
-      // a failed attempt is shown only while the add it belongs to runs
-      if (previous?.isLoading != next.isLoading) ref.read(addProfileRetryProvider.notifier).set(null);
+      // a failed attempt is shown only while the add it belongs to runs. Riverpod 3 also calls
+      // this for the first value, while the provider builds, when no other provider may change
+      if (previous != null && previous.isLoading != next.isLoading) {
+        ref.read(addProfileRetryProvider.notifier).set(null);
+      }
       final t = ref.read(translationsProvider).requireValue;
       final notification = ref.read(inAppNotificationControllerProvider);
       switch (next) {
